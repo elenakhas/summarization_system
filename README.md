@@ -1,9 +1,9 @@
 # summarization_system
-A group project for NLP Systems and Applications @ UW
+A group project for NLP Systems and Applications @ UW \
 
 Contributors:
-Erica Gardner
-Saumya Shah
-Vikash Kumar
-Elena Khasanova
-Sophia Chan
+Erica Gardner \
+Saumya Shah \
+Vikash Kumar \
+Elena Khasanova \
+Sophia Chan \
