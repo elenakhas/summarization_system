@@ -6,4 +6,4 @@ Erica Gardner \
 Saumya Shah \
 Vikash Kumar \
 Elena Khasanova \
-Sophia Chan \
+Sophia Chan 
