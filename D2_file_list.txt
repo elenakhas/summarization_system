@@ -1,0 +1,3 @@
+results/D2_rouge_scores_.out
+doc/D2.pdf
+doc/D2_presentation.pdf
