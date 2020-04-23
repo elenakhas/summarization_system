@@ -39,12 +39,12 @@ def read_data(corpus_dir, xml_filename, data_store):
         {"topic_id": {
             "title": title, 
             "narrative": narrative, 
-            {"doc_id": text ... "doc_id": text}}}
+            "docs": {"doc_id": text ... "doc_id": text}}}
     """
-
     json_path = os.path.join(data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json")
     if os.path.exists(json_path):
-        return json.load(json_path)
+        with open(json_path) as infile:
+            return json.load(infile)
 
     with open(xml_filename, 'r') as myfile:
         myfile_data = myfile.read().replace('\n', ' ')
