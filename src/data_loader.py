@@ -165,4 +165,4 @@ if __name__ == "__main__":
     if not os.path.exists(data_store["working_dir"]):
         os.makedirs(data_store["working_dir"])
 
-    input_data = load_data("input_data", data_store, args.split, year=2009)
+    input_data = load_data("input_data", data_store, "training", year=2009)
