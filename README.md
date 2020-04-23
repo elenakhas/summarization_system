@@ -17,7 +17,7 @@ To run the summarization system on [patas](https://wiki.ling.washington.edu/bin/
 
 
 
-Contributors: \
+# Contributors
 Erica Gardner \
 Saumya Shah \
 Vikash Kumar \
