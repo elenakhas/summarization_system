@@ -72,9 +72,6 @@ def read_data(corpus_dir, xml_filename, data_store):
                     publication = (doc_id.split("_")[0] + "_" + doc_id.split("_")[1]).lower()
                     date = doc_id.split("_")[2].split(".")[0]
                     publication_doc = doc_id.split("_")[2].split(".")[1]
-                    # print("publication: {}".format(publication))
-                    # print("publication_doc: {}".format(publication_doc))
-                    # exit()
 
                     path = corpus_dir + publication + "/" + publication + "_" + date[:-2] + ".xml"
 
@@ -91,7 +88,6 @@ def read_data(corpus_dir, xml_filename, data_store):
                         document += line.contents[0].strip() + " "
 
                     data[topic_id]["docs"][doc_id] = document
-                    # print(document)
     
     print("finished fetching all the data")
     if not os.path.exists(json_path):
@@ -141,6 +137,7 @@ def load_input_data(fn_generator, data_store):
         data.update(file_data)
     return data
 
+
 def load_human_summaries(fn_generator, data_store):
     for f in fn_generator:
         # TODO
@@ -164,5 +161,8 @@ if __name__ == "__main__":
 
     with open(args.config) as infile:
         data_store = json.load(infile)
+
+    if not os.path.exists(data_store["working_dir"]):
+        os.makedirs(data_store["working_dir"])
 
     input_data = load_data("input_data", data_store, args.split, year=2009)
