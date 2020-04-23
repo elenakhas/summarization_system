@@ -18,9 +18,9 @@ To run the summarization system on [patas](https://wiki.ling.washington.edu/bin/
 
 
 # Contributors
-Erica Gardner \
-Saumya Shah \
-Vikash Kumar \
-Elena Khasanova \
-Sophia Chan 
+* Erica Gardner \
+* Saumya Shah \
+* Vikash Kumar \
+* Elena Khasanova \
+* Sophia Chan 
 
