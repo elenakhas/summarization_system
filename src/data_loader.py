@@ -109,7 +109,7 @@ def filenames(data_type, split, year, data_store):
     """
     dirname = os.path.join(data_store[data_type], split, str(year))   # Base path is the one from the config file
     for f in os.listdir(dirname):
-        if data_type == "doc_spec" and not f.endswith(".xml"):
+        if data_type == "input_data" and not f.endswith(".xml"):
             # Document specification files must have "*.xml" extension, so skip
             continue 
         
