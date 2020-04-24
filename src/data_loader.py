@@ -142,14 +142,14 @@ def load_human_summaries(fn_generator, data_store):
     for f in fn_generator:
         # TODO
         pass
-    return
+    raise NotImplementedError
 
 
 def load_baseline_summaries(fn_generator, data_store):
     for f in fn_generator:
         # TODO
         pass
-    return
+    raise NotImplementedError
 
 
 

@@ -4,5 +4,6 @@
     "input_data":     "/dropbox/19-20/573/Data/Documents/", 
     "human_summaries": "/dropbox/19-20/573/Data/models/",
     "baseline_summaries": "/dropbox/19-20/573/Data/peers/",
-    "working_dir": "working_files"
+    "working_dir": "working_files",
+    "output_dir": "../outputs/D2/"
 }
