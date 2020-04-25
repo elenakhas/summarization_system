@@ -6,6 +6,7 @@ from collections import defaultdict
 from datetime import datetime
 from tqdm import tqdm, trange
 
+
 DATA_TYPES = (
     "input_data",  
     "human_summaries", # Human-created gold-standard model summary files
@@ -95,7 +96,7 @@ def process_acquaint2(path, doc_id):
     return document_string    
 
 
-def read_data(xml_filename, split, data_store):
+def read_data(xml_filename, split, data_store, test=False):
     """
     Args:
         xml_filename (str): TAC documents specification
@@ -107,6 +108,8 @@ def read_data(xml_filename, split, data_store):
             "docs": {"doc_id": text ... "doc_id": text}}}
     """
     json_path = os.path.join(data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json")
+    if test:
+        json_path += ".small"
     if os.path.exists(json_path):
         with open(json_path) as infile:
             return json.load(infile)
@@ -121,7 +124,7 @@ def read_data(xml_filename, split, data_store):
     narrative = [element.contents[0].replace("\t", '').strip() for element in soup.find_all("narrative")]
 
     data = {}
-    for i in trange(len(names[:3]), desc="topic"):
+    for i in trange(len(names), desc="topic"):
         name = names[i]
         topic_id = name.get("id")
         if topic_id not in data:
@@ -148,7 +151,9 @@ def read_data(xml_filename, split, data_store):
     print("finished fetching all the data")
     if not os.path.exists(json_path):
         with open(json_path, 'w+') as json_file:
-            json.dump(data, json_file)
+            print("writing to {}".format(json_path))
+            json.dump(data, json_file, indent=2)
+            print("finished writing to {}".format(json_path))
     return data 
 
 
@@ -170,11 +175,10 @@ def filenames(data_type, split, year, data_store):
         if data_type == "input_data" and not f.endswith(".xml"):
             # Document specification files must have "*.xml" extension, so skip
             continue 
-        
         yield os.path.join(dirname, f)
 
 
-def load_data(data_type, data_store, split, year=2010):
+def load_data(data_type, data_store, split, test=False, year=2010):
     """
     Args:
         data_type (str): must be in DATA_TYPES and in config.json
@@ -184,13 +188,9 @@ def load_data(data_type, data_store, split, year=2010):
 
     assert data_type in DATA_TYPES 
     fn_generator = filenames(data_type, split, year, data_store)
-    return load_input_data(fn_generator, split, data_store)
-
-
-def load_input_data(fn_generator, split, data_store):
     data = {}
     for f in fn_generator:
-        file_data = read_data(f, split, data_store)
+        file_data = read_data(f, split, data_store, test=test)
         data.update(file_data)
     return data
 
