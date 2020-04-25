@@ -3,6 +3,7 @@ import argparse
 from bs4 import BeautifulSoup
 import json
 from collections import defaultdict
+from datetime import datetime
 
 
 DATA_TYPES = (
@@ -12,27 +13,30 @@ DATA_TYPES = (
 )
 
 
-def get_loader(data_type):
-    """
-    Args:
-        data_type (str): must be in DATA_TYPES and in config.json
-    
-    Returns:
-        The loading function for that data type.
-    """
-    if data_type == "input_data":
-        return load_input_data
-    elif data_type == "human_summaries":
-        return load_human_summaries
-    elif data_type == "baseline_summaries":
-        return load_baseline_summaries
-    raise Exception("Data type {} is invalid".format(data_type))
+def get_path_from_docid(doc_id, split, data_store):
+    if split == "training":
+        corpus_dir = data_store["acquaint-2"]
+        publication = (doc_id.split("_")[0] + "_" + doc_id.split("_")[1]).lower()
+        date = doc_id.split("_")[2].split(".")[0]
+        publication_doc = doc_id.split("_")[2].split(".")[1]
+        path = corpus_dir + publication + "/" + publication + "_" + date[:-2] + ".xml"
+        return path
+    elif split == "devtest":
+        corpus_dir = data_store["acquaint"]
+        doc_id = doc_id.split(".")[0]
+        publication = doc_id[:3]
+        datestring = doc_id[3:]
+        dt = datetime.strptime(datestring, "%Y%m%d")
+        path = os.path.join(corpus_dir, publication.lower(), str(dt.year), 
+            "{}_{}_ENG".format(datestring, publication))
+        return path
+    elif split == "evaltest":
+        return
 
 
-def read_data(corpus_dir, xml_filename, data_store):
+def read_data(xml_filename, split, data_store, test=False):
     """
     Args:
-        corpus_dir (str): path to the corpus as stated in config.json
         xml_filename (str): TAC documents specification
         data_store (dict): loaded config.json
     Returns:
@@ -62,24 +66,31 @@ def read_data(corpus_dir, xml_filename, data_store):
         if topic_id not in data:
             data[topic_id] = dict()
             data[topic_id]["title"] = titles[i]
-            data[topic_id]["narrative"] = narrative[i].replace("\t", '')
+
+            if split != "devtest":
+                data[topic_id]["narrative"] = narrative[i].replace("\t", '')
+
             data[topic_id]["docs"] = {}
             docs = soup.find(id=topic_id + "-A").children
             for doc in docs:
                 if str(type(doc)) == "<class 'bs4.element.Tag'>":
                     doc_id = doc["id"]
-                    print("fetching {}".format(doc_id))
-                    publication = (doc_id.split("_")[0] + "_" + doc_id.split("_")[1]).lower()
-                    date = doc_id.split("_")[2].split(".")[0]
-                    publication_doc = doc_id.split("_")[2].split(".")[1]
+                    path = get_path_from_docid(doc_id, split, data_store)
 
-                    path = corpus_dir + publication + "/" + publication + "_" + date[:-2] + ".xml"
+                    with open(path) as infile:
+                        data = infile.read()
+                    doc_soup = BeautifulSoup(data, 'lxml')
 
-                    myfile = open(path, 'r')
-                    myfile_data = myfile.read().replace("\n", ' ').strip()
-                    document = ""
-                    doc_soup = BeautifulSoup(myfile_data, 'lxml')
-                    headline = doc_soup.find(id=str(doc_id)).find("headline").contents[0].strip()
+                    try:
+                        doc_id = doc_soup.find(id=str(doc_id))
+                        # <DOC id="APW_ENG_20041201.0001" type="story" >
+                    except AttributeError:
+                        # <DOCNO> APW19990421.0001 </DOCNO>
+                        # TODO
+                        pass
+
+                    headline = doc_id.find("headline").contents[0].strip()
+                    
                     if doc_soup.find(id=str(doc_id)).find("dateline"):
                         dateline = doc_soup.find(id=str(doc_id)).find("dateline").contents[0].strip()
                     text = doc_soup.find(id=str(doc_id)).find("text").find_all("p")
@@ -88,6 +99,10 @@ def read_data(corpus_dir, xml_filename, data_store):
                         document += line.contents[0].strip() + " "
 
                     data[topic_id]["docs"][doc_id] = document
+                    
+                    if test:
+                        # Only fetch 1 doc per topic
+                        break
     
     print("finished fetching all the data")
     if not os.path.exists(json_path):
@@ -107,7 +122,9 @@ def filenames(data_type, split, year, data_store):
     Returns:
         A generator that gives one filename at a time.
     """
-    dirname = os.path.join(data_store[data_type], split, str(year))   # Base path is the one from the config file
+    dirname = os.path.join(data_store[data_type], split)   # Base path is the one from the config file
+    if split == "training":
+        dirname = os.path.join(dirname, str(year))
     for f in os.listdir(dirname):
         if data_type == "input_data" and not f.endswith(".xml"):
             # Document specification files must have "*.xml" extension, so skip
@@ -126,31 +143,15 @@ def load_data(data_type, data_store, split, year=2010):
 
     assert data_type in DATA_TYPES 
     fn_generator = filenames(data_type, split, year, data_store)
-    loader = get_loader(data_type)
-    return loader(fn_generator, data_store)
+    return load_input_data(fn_generator, split, data_store)
 
 
-def load_input_data(fn_generator, data_store):
+def load_input_data(fn_generator, split, data_store):
     data = {}
     for f in fn_generator:
-        file_data = read_data(data_store["acquaint-2"], f, data_store)
+        file_data = read_data(f, split, data_store)
         data.update(file_data)
     return data
-
-
-def load_human_summaries(fn_generator, data_store):
-    for f in fn_generator:
-        # TODO
-        pass
-    raise NotImplementedError
-
-
-def load_baseline_summaries(fn_generator, data_store):
-    for f in fn_generator:
-        # TODO
-        pass
-    raise NotImplementedError
-
 
 
 if __name__ == "__main__":
@@ -165,4 +166,4 @@ if __name__ == "__main__":
     if not os.path.exists(data_store["working_dir"]):
         os.makedirs(data_store["working_dir"])
 
-    input_data = load_data("input_data", data_store, "training", year=2009)
+    input_data = load_data("input_data", data_store, "devtest", year=2010)
