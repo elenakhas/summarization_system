@@ -13,15 +13,15 @@ DATA_TYPES = (
 )
 
 
+
 def get_path_from_docid(doc_id, split, data_store):
-    if split == "training":
+    if "_" in doc_id:
         corpus_dir = data_store["acquaint-2"]
         publication = (doc_id.split("_")[0] + "_" + doc_id.split("_")[1]).lower()
         date = doc_id.split("_")[2].split(".")[0]
         publication_doc = doc_id.split("_")[2].split(".")[1]
         path = corpus_dir + publication + "/" + publication + "_" + date[:-2] + ".xml"
-        return path
-    elif split == "devtest":
+    else:
         corpus_dir = data_store["acquaint"]
         doc_id = doc_id.split(".")[0]
         publication = doc_id[:3]
