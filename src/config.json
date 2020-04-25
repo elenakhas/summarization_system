@@ -1,5 +1,5 @@
 {
-    "acquaint":      "/corpora/LDC/LDC02T31/data/",
+    "acquaint":      "/corpora/LDC/LDC02T31/",
     "acquaint-2":    "/corpora/LDC/LDC08T25/data/",
     "input_data":     "/dropbox/19-20/573/Data/Documents/", 
     "human_summaries": "/dropbox/19-20/573/Data/models/",

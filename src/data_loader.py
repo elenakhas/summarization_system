@@ -3,7 +3,8 @@ import argparse
 from bs4 import BeautifulSoup
 import json
 from collections import defaultdict
-
+from datetime import datetime
+from tqdm import tqdm, trange
 
 DATA_TYPES = (
     "input_data",  
@@ -12,27 +13,91 @@ DATA_TYPES = (
 )
 
 
-def get_loader(data_type):
-    """
-    Args:
-        data_type (str): must be in DATA_TYPES and in config.json
+def get_path_from_docid(doc_id, split, data_store):
+    if "_" in doc_id:  # Then the document is in ACQUAINT-2
+        corpus_dir = data_store["acquaint-2"]
+        publication = (doc_id.split("_")[0] + "_" + doc_id.split("_")[1]).lower()
+        date = doc_id.split("_")[2].split(".")[0]
+        publication_doc = doc_id.split("_")[2].split(".")[1]
+        path = corpus_dir + publication + "/" + publication + "_" + date[:-2] + ".xml"
+        return path
+    else:  # Then the document is in ACQUAINT
+        corpus_dir = data_store["acquaint"]
+        publication = doc_id[0:3]
+        date = doc_id.split(".")[0][3:]
+        year = date[0:4]
+        if publication == "NYT":
+            path = corpus_dir + publication.lower() + "/" + year + "/" + date + "_" + publication
+        elif publication == "XIE":
+            path = corpus_dir + publication.lower() + "/" + year + "/" + date + "_" + "XIN_ENG"
+        else:
+            path = corpus_dir + publication.lower() + "/" + year + "/" + date + "_" + publication + "_ENG"
+        return path
+
+
+def process_acquaint1(path, doc_id):
+    print("processing {} in process_acquaint1".format(path))
+    myfile = open(path, 'r')
+    myfile_data = myfile.read().replace("\n", ' ').strip()
+    document_string = ""
+    doc_soup = BeautifulSoup(myfile_data, 'lxml')
+    results = doc_soup.find_all("docno")
+    for result in results:
+        if result.contents[0].strip() == doc_id:
+            docno = result
+            break
     
-    Returns:
-        The loading function for that data type.
-    """
-    if data_type == "input_data":
-        return load_input_data
-    elif data_type == "human_summaries":
-        return load_human_summaries
-    elif data_type == "baseline_summaries":
-        return load_baseline_summaries
-    raise Exception("Data type {} is invalid".format(data_type))
+    doc = docno.parent
+
+    if doc.find("headline"):
+        headline = doc.find("headline").contents[0].strip()
+    else:
+        headline = ""
+    if doc.find("date_time").contents[0].strip():
+        datetime = doc.find("date_time").contents[0].strip()
+    else:
+        datetime = ""
+
+    if doc.find("category"):
+        category = doc.find("category").contents[0].strip()
+    else:
+        category = ""
+    text = doc.find("text").find_all("p")
+    document_string += headline + ". " + datetime + ". " + category + ". "
+
+    for line in text:
+        document_string += line.contents[0].strip() + " "
+    return document_string
 
 
-def read_data(corpus_dir, xml_filename, data_store):
+def process_acquaint2(path, doc_id):
+    print("processing {} in process_acquaint2".format(path))
+    myfile = open(path, 'r')
+    myfile_data = myfile.read().replace("\n", ' ').strip()
+    document_string = ""
+    doc_soup = BeautifulSoup(myfile_data, 'lxml')
+
+    headline = ""
+    dateline = ""
+    if doc_soup.find(id=str(doc_id)).find("headline"):
+        headline = doc_soup.find(id=str(doc_id)).find("headline").contents[0].strip()
+    if doc_soup.find(id=str(doc_id)).find("dateline"):
+        dateline = doc_soup.find(id=str(doc_id)).find("dateline").contents[0].strip()
+    text = doc_soup.find(id=str(doc_id)).find("text").find_all("p")
+
+    # document_string += headline + ". " + dateline + ". "
+    if headline:
+        document_string += headline + ". "
+    if dateline:
+        document_string += dateline + ". "
+    for line in text:
+        document_string += line.contents[0].strip() + " "
+    return document_string    
+
+
+def read_data(xml_filename, split, data_store):
     """
     Args:
-        corpus_dir (str): path to the corpus as stated in config.json
         xml_filename (str): TAC documents specification
         data_store (dict): loaded config.json
     Returns:
@@ -56,38 +121,29 @@ def read_data(corpus_dir, xml_filename, data_store):
     narrative = [element.contents[0].replace("\t", '').strip() for element in soup.find_all("narrative")]
 
     data = {}
-    for i in range(len(names)):
+    for i in trange(len(names[:3]), desc="topic"):
         name = names[i]
         topic_id = name.get("id")
         if topic_id not in data:
             data[topic_id] = dict()
             data[topic_id]["title"] = titles[i]
-            data[topic_id]["narrative"] = narrative[i].replace("\t", '')
+
+            if split != "devtest":
+                data[topic_id]["narrative"] = narrative[i].replace("\t", '')
+
             data[topic_id]["docs"] = {}
             docs = soup.find(id=topic_id + "-A").children
             for doc in docs:
                 if str(type(doc)) == "<class 'bs4.element.Tag'>":
                     doc_id = doc["id"]
-                    print("fetching {}".format(doc_id))
-                    publication = (doc_id.split("_")[0] + "_" + doc_id.split("_")[1]).lower()
-                    date = doc_id.split("_")[2].split(".")[0]
-                    publication_doc = doc_id.split("_")[2].split(".")[1]
-
-                    path = corpus_dir + publication + "/" + publication + "_" + date[:-2] + ".xml"
-
-                    myfile = open(path, 'r')
-                    myfile_data = myfile.read().replace("\n", ' ').strip()
-                    document = ""
-                    doc_soup = BeautifulSoup(myfile_data, 'lxml')
-                    headline = doc_soup.find(id=str(doc_id)).find("headline").contents[0].strip()
-                    if doc_soup.find(id=str(doc_id)).find("dateline"):
-                        dateline = doc_soup.find(id=str(doc_id)).find("dateline").contents[0].strip()
-                    text = doc_soup.find(id=str(doc_id)).find("text").find_all("p")
-                    document += headline + ". " + dateline + ". "
-                    for line in text:
-                        document += line.contents[0].strip() + " "
+                    path = get_path_from_docid(doc_id, split, data_store)
+                    if "_" in doc_id: # Then the document is in the newer ACQUAINT-2
+                        document = process_acquaint2(path, doc_id)
+                    else:  # Then the document is in the older ACQUAINT-1
+                        document = process_acquaint1(path, doc_id)
 
                     data[topic_id]["docs"][doc_id] = document
+
     
     print("finished fetching all the data")
     if not os.path.exists(json_path):
@@ -107,7 +163,9 @@ def filenames(data_type, split, year, data_store):
     Returns:
         A generator that gives one filename at a time.
     """
-    dirname = os.path.join(data_store[data_type], split, str(year))   # Base path is the one from the config file
+    dirname = os.path.join(data_store[data_type], split)   # Base path is the one from the config file
+    if split == "training":
+        dirname = os.path.join(dirname, str(year))
     for f in os.listdir(dirname):
         if data_type == "input_data" and not f.endswith(".xml"):
             # Document specification files must have "*.xml" extension, so skip
@@ -126,31 +184,15 @@ def load_data(data_type, data_store, split, year=2010):
 
     assert data_type in DATA_TYPES 
     fn_generator = filenames(data_type, split, year, data_store)
-    loader = get_loader(data_type)
-    return loader(fn_generator, data_store)
+    return load_input_data(fn_generator, split, data_store)
 
 
-def load_input_data(fn_generator, data_store):
+def load_input_data(fn_generator, split, data_store):
     data = {}
     for f in fn_generator:
-        file_data = read_data(data_store["acquaint-2"], f, data_store)
+        file_data = read_data(f, split, data_store)
         data.update(file_data)
     return data
-
-
-def load_human_summaries(fn_generator, data_store):
-    for f in fn_generator:
-        # TODO
-        pass
-    raise NotImplementedError
-
-
-def load_baseline_summaries(fn_generator, data_store):
-    for f in fn_generator:
-        # TODO
-        pass
-    raise NotImplementedError
-
 
 
 if __name__ == "__main__":
@@ -165,4 +207,4 @@ if __name__ == "__main__":
     if not os.path.exists(data_store["working_dir"]):
         os.makedirs(data_store["working_dir"])
 
-    input_data = load_data("input_data", data_store, "training", year=2009)
+    input_data = load_data("input_data", data_store, "devtest", year=2010)
