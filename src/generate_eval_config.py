@@ -88,6 +88,6 @@ if __name__ == "__main__":
 
     #print(output_files)
     #print(sorted(output_files))
-    print(len(model_files))
+    #print(len(model_files))
     build_tree(outf, sorted(output_files), outputs_path, sorted(model_files), model_path)
 
