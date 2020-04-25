@@ -152,7 +152,7 @@ def read_data(xml_filename, split, data_store, test=False):
     if not os.path.exists(json_path):
         with open(json_path, 'w+') as json_file:
             print("writing to {}".format(json_path))
-            json.dump(data, json_file)
+            json.dump(data, json_file, indent=2)
             print("finished writing to {}".format(json_path))
     return data 
 
