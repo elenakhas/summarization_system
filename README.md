@@ -15,12 +15,16 @@ To run the summarization system on [patas](https://wiki.ling.washington.edu/bin/
     bash src/run.sh
     ```
 
-
+To run on condor:
+```
+chmod 777 src/run.sh
+condor_submit D2.cmd
+```
 
 # Contributors
-Erica Gardner \
-Saumya Shah \
-Vikash Kumar \
-Elena Khasanova \
-Sophia Chan 
+* Erica Gardner 
+* Saumya Shah 
+* Vikash Kumar 
+* Elena Khasanova
+* Sophia Chan 
 
