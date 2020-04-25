@@ -3,7 +3,7 @@ import argparse
 import json
 
 from data_loader import load_data
-from content_selection import select_content
+from content_selection import preprocess, select_content
 
 
 def run(args):
