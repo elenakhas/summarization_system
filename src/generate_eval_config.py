@@ -1,8 +1,9 @@
 import argparse
 import xml.etree.ElementTree as ET
-from os import listdir
+import os
 from os.path import isfile, join
 from typing import List
+
 
 def indent(elem, level=0):
     """
@@ -65,26 +66,43 @@ def build_tree(outfile: str, outputs_dir: List, outputs_path: str, models_dir: L
     tree.write(outfile, encoding="utf-8", short_empty_elements=False)
 
 
+def write_eval_config(args, data_store, overwrite=True):
+    outf = "rouge_run_{}_{}.xml".format(args.deliverable, args.split)
+    if args.split == 'training':
+        outputs_path = data_store["training_outdir"]
+        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
+        #model_path = "/Users/esgardner/PycharmProjects/" + args.year # for running locally
+        model_path = os.path.join(data_store["human_summaries"], args.split, "2009")
+        model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
+    elif args.split == 'devtest':
+        outputs_path = data_store["devtest_outdir"]
+        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
+        model_path = os.path.join(data_store["human_summaries"], args.split)
+        model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
+    build_tree(outf, sorted(output_files), outputs_path, sorted(model_files), model_path)
+
+
 if __name__ == "__main__":
+    # Testing for module
     parser = argparse.ArgumentParser()
-    parser.add_argument("deliverable", type=str, default="D2", help='deliverable number, i.e. D2')
-    parser.add_argument("data", type=str, default="training", choices=["devtest", "evaltest", "training"], help='type of data, i.e. training')
-    parser.add_argument("year", type=str, default="2009", help="release year of data")
+    parser.add_argument("--deliverable", type=str, default="D2", help='deliverable number, i.e. D2')
+    parser.add_argument("--split", type=str, default="training", choices=["devtest", "evaltest", "training"], help='type of data, i.e. training')
+    parser.add_argument("--year", type=str, default="2009", help="release year of data")
     args = parser.parse_args()
 
-    outf = "rouge_run_{}_{}.xml".format(args.deliverable, args.data)
+    outf = "rouge_run_{}_{}.xml".format(args.deliverable, args.split)
     if args.data == 'training':
         outputs_path = "../outputs/train_output"
-        output_files = [f for f in listdir(outputs_path) if isfile(join(outputs_path, f))]
+        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
         #model_path = "/Users/esgardner/PycharmProjects/" + args.year # for running locally
         model_path = "/dropbox/19-20/573/Data/models/training/" + args.year # for running on patas
         #model_files = ""
-        model_files = [f for f in listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
-    elif args.data == 'devtest':
+        model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
+    elif args.split == 'devtest':
         outputs_path = "../outputs"
-        output_files = [f for f in listdir(outputs_path) if isfile(join(outputs_path, f))]
+        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
         model_path = "/dropbox/19-20/573/Data/models/devtest"
-        model_files = [f for f in listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
+        model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
 
     #print(output_files)
     #print(sorted(output_files))

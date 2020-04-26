@@ -1,0 +1,44 @@
+<ROUGE_EVAL version="1.5.5">
+  <EVAL ID="D1001-A.M.100.A">
+    <PEER-ROOT>../outputs/D2/</PEER-ROOT>
+    <MODEL-ROOT>/dropbox/19-20/573/Data/models/devtest</MODEL-ROOT>
+    <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
+    <PEERS>
+      <P ID="1">D1001-A.M.100.A.D2run0</P>
+    </PEERS>
+    <MODELS>
+      <M ID="A">D1001-A.M.100.A.A</M>
+      <M ID="B">D1001-A.M.100.A.B</M>
+      <M ID="F">D1001-A.M.100.A.F</M>
+      <M ID="H">D1001-A.M.100.A.H</M>
+    </MODELS>
+  </EVAL>
+  <EVAL ID="D1002-A.M.100.A">
+    <PEER-ROOT>../outputs/D2/</PEER-ROOT>
+    <MODEL-ROOT>/dropbox/19-20/573/Data/models/devtest</MODEL-ROOT>
+    <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
+    <PEERS>
+      <P ID="1">D1002-A.M.100.A.D2run0</P>
+    </PEERS>
+    <MODELS>
+      <M ID="A">D1002-A.M.100.A.A</M>
+      <M ID="B">D1002-A.M.100.A.B</M>
+      <M ID="C">D1002-A.M.100.A.C</M>
+      <M ID="D">D1002-A.M.100.A.D</M>
+    </MODELS>
+  </EVAL>
+  <EVAL ID="D1003-A.M.100.A">
+    <PEER-ROOT>../outputs/D2/</PEER-ROOT>
+    <MODEL-ROOT>/dropbox/19-20/573/Data/models/devtest</MODEL-ROOT>
+    <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
+    <PEERS>
+      <P ID="1">D1003-A.M.100.A.D2run0</P>
+    </PEERS>
+    <MODELS>
+      <M ID="A">D1003-A.M.100.A.A</M>
+      <M ID="C">D1003-A.M.100.A.C</M>
+      <M ID="E">D1003-A.M.100.A.E</M>
+      <M ID="G">D1003-A.M.100.A.G</M>
+    </MODELS>
+  </EVAL>
+</ROUGE_EVAL>
