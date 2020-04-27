@@ -8,12 +8,13 @@ from data_loader import load_data
 from content_selection.preprocessing import preprocess 
 from content_selection.lda import lda_analysis
 from generate_eval_config import write_eval_config
+from generate_summaries import make_summaries
 
 
 def run(args):
     if args.run_id is None:
-        # args.run_id = "D2run0"
-        args.run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
+        args.run_id = "D2run0"
+        # args.run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
 
     with open(args.config) as infile:
         data_store = json.load(infile)
@@ -33,15 +34,18 @@ def run(args):
 
     print("selecting content")
     start = time.time()
-    candidate_sentences = lda_analysis(input_data)
+    topic_sentences = lda_analysis(preprocessed_data)
     print("\tfinished selecting content in {}".format(time.time()-start))
-
-    print("candiate_sentences:\n{}".format(candidate_sentences))
 
     print("writing eval config")
     start = time.time()
     write_eval_config(args, data_store, overwrite=True)
     print("\tfinished writing eval config in {}".format(time.time()-start))
+
+    print("generating summaries")
+    start = time.time()
+    make_summaries(topic_sentences, args, data_store)
+    print("\tfinished generating summaries in {}".format(time.time()-start))
 
 
 if __name__ == "__main__":

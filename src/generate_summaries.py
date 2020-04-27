@@ -7,7 +7,7 @@ from nltk import pos_tag
 import re
 
 
-def make_summaries(topic_dict):
+def make_summaries(topic_dict, args, data_store):
     """
     given a topic dictionary, generates summaries for each topic
     Args:
@@ -53,14 +53,34 @@ def make_summaries(topic_dict):
             else:
                 continue # keep going in case we find a shorter sentence to add
 
-
-
-
-        #print("length of summary is {}".format(summ_length))
+        # print("length of summary is {}".format(summ_length))
         summary_dict[topic_id] = summary
-        #print(summary)
-    #print("length of summary dict is {}".format(len(summary_dict)))
-    return summary_dict
+        # print(summary)
+    # print("length of summary dict is {}".format(len(summary_dict)))
+
+    if args.split == "training":
+        out_dir = data_store["training_outdir"]
+    elif args.split == "devtest":
+        out_dir = data_store["devtest_outdir"]
+    for topic_id, sentences in summary_dict.items():
+        write_to_file(out_dir, args.run_id, topic_id, sentences)
+
+
+def write_to_file(out_dir, run_id, topic_id, sentences):
+    id_part_1 = topic_id[:-1]
+    id_part_2 = topic_id[-1]
+    output_name = "{id_part_1}-A.M.100.{id_part_2}.{unique_alphanum}".format(
+        id_part_1=id_part_1,
+        id_part_2=id_part_2,
+        unique_alphanum=run_id,
+    )
+    output_path = os.path.join(out_dir, output_name)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+    with open(output_path, "w") as outfile:
+        for line in sentences:
+            outfile.write(line.replace("\\", "").replace(" ,", ", ") + "\n")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -68,11 +88,8 @@ if __name__ == "__main__":
     parser.add_argument("run_id", type=str, default="D2run0")
     parser.add_argument("out_dir", type=str, default="../outputs/D2")
     args = parser.parse_args()
-
-
     with open(args.candidates) as infile:
         topic_dictionary = json.load(infile)
-
 
     summaries_dict = make_summaries(topic_dictionary)
 
