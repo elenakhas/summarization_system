@@ -67,6 +67,8 @@ def build_tree(outfile: str, outputs_dir: List, outputs_path: str, models_dir: L
 
 
 def write_eval_config(args, data_store, overwrite=True):
+    print("args.split: {}".format(args.split))
+
     outf = "rouge_run_{}_{}.xml".format(args.deliverable, args.split)
     if args.split == 'training':
         outputs_path = data_store["training_outdir"]
@@ -83,29 +85,21 @@ def write_eval_config(args, data_store, overwrite=True):
 
 
 if __name__ == "__main__":
+    import json
     # Testing for module
     parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=str, default="config.json")
     parser.add_argument("--deliverable", type=str, default="D2", help='deliverable number, i.e. D2')
-    parser.add_argument("--split", type=str, default="training", choices=["devtest", "evaltest", "training"], help='type of data, i.e. training')
-    parser.add_argument("--year", type=str, default="2009", help="release year of data")
+    parser.add_argument("--split", type=str, default="training", choices=["devtest", "evaltest", "training"])
+    parser.add_argument("--run_id", default=None)
+    parser.add_argument("--test", default=False)
     args = parser.parse_args()
 
-    outf = "rouge_run_{}_{}.xml".format(args.deliverable, args.split)
-    if args.data == 'training':
-        outputs_path = "../outputs/train_output"
-        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
-        #model_path = "/Users/esgardner/PycharmProjects/" + args.year # for running locally
-        model_path = "/dropbox/19-20/573/Data/models/training/" + args.year # for running on patas
-        #model_files = ""
-        model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
-    elif args.split == 'devtest':
-        outputs_path = "../outputs"
-        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
-        model_path = "/dropbox/19-20/573/Data/models/devtest"
-        model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
+    with open(args.config) as infile:
+        data_store = json.load(infile)
 
-    #print(output_files)
-    #print(sorted(output_files))
-    #print(len(model_files))
-    build_tree(outf, sorted(output_files), outputs_path, sorted(model_files), model_path)
+    if not os.path.exists(data_store["working_dir"]):
+        os.makedirs(data_store["working_dir"])
+
+    write_eval_config(args, data_store)
 

@@ -10,14 +10,14 @@ import pprint
 from datetime import datetime
 
 
-def make_placeholder_summaries(input_data, data_store, unique_alphanum):
+def make_placeholder_summaries(input_data, unique_alphanum, out_dir):
     for topic_id in tqdm(input_data.keys()):
         for doc_id, doc in input_data[topic_id]["docs"].items():
-            _create_placeholders(topic_id, doc_id, doc, unique_alphanum, out_dir=data_store["output_dir"])
+            _create_placeholders(topic_id, doc_id, doc, unique_alphanum, out_dir=out_dir)
             break
 
 
-def make_placeholder_output(input_data, data_store, unique_alphanum):
+def make_placeholder_output(input_data, unique_alphanum, out_dir):
     """
     Returns:
         A list of dicts, where each dict represents a sentence. 
@@ -100,12 +100,12 @@ if __name__ == "__main__":
     if not os.path.exists(data_store["working_dir"]):
         os.makedirs(data_store["working_dir"])
 
-    input_data = load_data("input_data", data_store, "devtest", year=2010, test=True)
+    input_data = load_data("input_data", data_store, "devtest", year=2010, test=False)
 
     # run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
     run_id = "D2run0"
-    make_placeholder_summaries(input_data, data_store, run_id)
+    make_placeholder_summaries(input_data, run_id, data_store["devtest_outdir"])
     placeholder_output = make_placeholder_output(
-        input_data, data_store, run_id)
+        input_data, run_id, data_store["devtest_outdir"])
     for sent in placeholder_output[:3]:
         pprint.pprint(sent)
