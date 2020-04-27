@@ -58,8 +58,8 @@ def make_summaries(topic_dict):
 
         #print("length of summary is {}".format(summ_length))
         summary_dict[topic_id] = summary
-        print(summary)
-    print("length of summary dict is {}".format(len(summary_dict)))
+        #print(summary)
+    #print("length of summary dict is {}".format(len(summary_dict)))
     return summary_dict
 
 if __name__ == "__main__":
