@@ -6,7 +6,7 @@ import time
 
 from data_loader import load_data
 from content_selection.preprocessing import preprocess 
-# from content_selection.lda import get_candidate_sentences
+from content_selection.lda import lda_analysis
 from generate_eval_config import write_eval_config
 
 
@@ -30,11 +30,13 @@ def run(args):
     start = time.time()
     preprocessed_data = preprocess(input_data)
     print("\tfinished preprocessing data in {}".format(time.time()-start))
-    
-    # print("selecting content")
-    # start = time.time()
-    # candidate_sentences = get_candidate_sentences(input_data)
-    # print("\tfinished selecting content in {}".format(time.time()-start))
+
+    print("selecting content")
+    start = time.time()
+    candidate_sentences = lda_analysis(input_data)
+    print("\tfinished selecting content in {}".format(time.time()-start))
+
+    print("candiate_sentences:\n{}".format(candidate_sentences))
 
     print("writing eval config")
     start = time.time()
@@ -48,7 +50,7 @@ if __name__ == "__main__":
     parser.add_argument("--deliverable", type=str, default="D2", help='deliverable number, i.e. D2')
     parser.add_argument("--split", type=str, default="training", choices=["devtest", "evaltest", "training"])
     parser.add_argument("--run_id", default=None)
-    parser.add_argument("--test", default=False)
+    parser.add_argument("--test", action="store_true")
     args = parser.parse_args()
     run(args)
 
