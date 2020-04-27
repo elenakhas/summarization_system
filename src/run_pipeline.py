@@ -36,16 +36,16 @@ def run(args):
     start = time.time()
     topic_sentences = lda_analysis(preprocessed_data)
     print("\tfinished selecting content in {}".format(time.time()-start))
+    
+    print("generating summaries")
+    start = time.time()
+    make_summaries(topic_sentences, args, data_store)
+    print("\tfinished generating summaries in {}".format(time.time()-start))
 
     print("writing eval config")
     start = time.time()
     write_eval_config(args, data_store, overwrite=True)
     print("\tfinished writing eval config in {}".format(time.time()-start))
-
-    print("generating summaries")
-    start = time.time()
-    make_summaries(topic_sentences, args, data_store)
-    print("\tfinished generating summaries in {}".format(time.time()-start))
 
 
 if __name__ == "__main__":

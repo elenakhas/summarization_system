@@ -1,3 +1,4 @@
+nltk
 lxml
 bs4
 spacy=2.1.3

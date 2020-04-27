@@ -2,9 +2,12 @@ Requirement already satisfied: en_core_web_sm==2.1.0 from https://github.com/exp
 [38;5;2m[+] Download and installation successful[0m
 You can now load the model via spacy.load('en_core_web_sm')
 loading input data
-	finished loading input data in 0.0063953399658203125
+	finished loading input data in 0.006239652633666992
 loading preprocessed data
-	finished preprocessing data in 3.150175094604492
-args.split: devtest
+	finished preprocessing data in 36.201162815093994
+selecting content
+	finished selecting content in 80.81720924377441
+generating summaries
+	finished generating summaries in 0.5805623531341553
 writing eval config
-	finished writing eval config in 0.042754411697387695
+	finished writing eval config in 0.05440187454223633
