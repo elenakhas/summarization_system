@@ -8,12 +8,21 @@ To run the summarization system on [patas](https://wiki.ling.washington.edu/bin/
 condor_submit D2.cmd
 ```
 
-To test running end to end on a subset of 3 topics on patas:
+To run end to end with training files:
 ```
 source /home2/schan2/anaconda3/etc/profile.d/conda.sh
 conda activate /home2/schan2/anaconda3/envs/573
-python3 run_pipeline.py --split devtest --test
+python3 run_pipeline.py --split training
 ```
+
+To run end to end with test files:
+```
+source /home2/schan2/anaconda3/etc/profile.d/conda.sh
+conda activate /home2/schan2/anaconda3/envs/573
+python3 run_pipeline.py --split devtest 
+```
+
+
 
 # Contributors
 * Erica Gardner 
