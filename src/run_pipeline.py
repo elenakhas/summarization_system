@@ -1,15 +1,19 @@
 import os 
 import argparse
 import json
+from datetime import datetime
+import time
 
 from data_loader import load_data
-from content_selection import preprocess, select_content
+from content_selection.preprocessing import preprocess 
+# from content_selection.lda import get_candidate_sentences
+from generate_eval_config import write_eval_config
 
 
 def run(args):
     if args.run_id is None:
-        args.run_id = "D2run0"
-        # args.run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
+        # args.run_id = "D2run0"
+        args.run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
 
     with open(args.config) as infile:
         data_store = json.load(infile)
@@ -17,18 +21,35 @@ def run(args):
     if not os.path.exists(data_store["working_dir"]):
         os.makedirs(data_store["working_dir"])
 
-    input_data = load_data("input_data", data_store, "devtest", year=2010)
+    print("loading input data")
+    start = time.time()
+    input_data = load_data("input_data", data_store, "devtest", test=args.test, year=2010)
+    print("\tfinished loading input data in {}".format(time.time()-start))
+
+    print("loading preprocessed data")
+    start = time.time()
     preprocessed_data = preprocess(input_data)
-    content = select_content(input_data)
+    print("\tfinished preprocessing data in {}".format(time.time()-start))
+    
+    # print("selecting content")
+    # start = time.time()
+    # candidate_sentences = get_candidate_sentences(input_data)
+    # print("\tfinished selecting content in {}".format(time.time()-start))
+
+    print("writing eval config")
+    start = time.time()
+    write_eval_config(args, data_store, overwrite=True)
+    print("\tfinished writing eval config in {}".format(time.time()-start))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="config.json")
+    parser.add_argument("--deliverable", type=str, default="D2", help='deliverable number, i.e. D2')
     parser.add_argument("--split", type=str, default="training", choices=["devtest", "evaltest", "training"])
     parser.add_argument("--run_id", default=None)
-    args = parser.parse_args() 
-
+    parser.add_argument("--test", default=False)
+    args = parser.parse_args()
     run(args)
 
 

@@ -196,6 +196,7 @@ def load_data(data_type, data_store, split, test=False, year=2010):
 
 
 if __name__ == "__main__":
+    # Testing for module
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="config.json")
     parser.add_argument("--split", type=str, default="training", choices=["devtest", "evaltest", "training"])

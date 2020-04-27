@@ -1,9 +1,10 @@
 {
-    "acquaint":      "/corpora/LDC/LDC02T31/",
-    "acquaint-2":    "/corpora/LDC/LDC08T25/data/",
-    "input_data":     "/dropbox/19-20/573/Data/Documents/", 
-    "human_summaries": "/dropbox/19-20/573/Data/models/",
-    "baseline_summaries": "/dropbox/19-20/573/Data/peers/",
-    "working_dir": "working_files",
-    "output_dir": "../outputs/D2/"
+    "acquaint":             "/corpora/LDC/LDC02T31/",
+    "acquaint-2":           "/corpora/LDC/LDC08T25/data/",
+    "input_data":           "/dropbox/19-20/573/Data/Documents/", 
+    "human_summaries":      "/dropbox/19-20/573/Data/models/",
+    "baseline_summaries":   "/dropbox/19-20/573/Data/peers/",
+    "working_dir":          "working_files",
+    "devtest_outdir":       "../outputs/D2/",
+    "training_outdir":      "../outputs/train_output/"
 }
