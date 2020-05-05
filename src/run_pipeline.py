@@ -24,12 +24,13 @@ def run(args):
 
     print("loading input data")
     start = time.time()
-    input_data = load_data("input_data", data_store, "devtest", test=args.test, year=2010)
+    input_data, xml_filename = load_data("input_data", data_store, args.split, test=args.test)
     print("\tfinished loading input data in {}".format(time.time()-start))
 
     print("loading preprocessed data")
     start = time.time()
-    preprocessed_data = preprocess(input_data)
+    preprocessed_data = preprocess(input_data, os.path.join(
+        data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json.preprocessed"))
     print("\tfinished preprocessing data in {}".format(time.time()-start))
 
     print("selecting content")

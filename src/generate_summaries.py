@@ -30,6 +30,8 @@ def make_summaries(topic_dict, args, data_store):
             if summ_length >= 100:
                 break
 
+            # remove all sentences that contain quotes
+
             # ignore short sentences
             if topic_dict[topic_id][sentence]['length'] <= 8:
                 continue
@@ -79,7 +81,7 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
         os.makedirs(out_dir)
     with open(output_path, "w") as outfile:
         for line in sentences:
-            outfile.write(line.replace("\\", "").replace(" ,", ", ") + "\n")
+            outfile.write(line.replace("\\", "").replace(" ,", ", ").replace("  ", " ") + "\n")
 
 
 if __name__ == "__main__":

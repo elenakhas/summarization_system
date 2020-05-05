@@ -7,13 +7,6 @@ from datetime import datetime
 from tqdm import tqdm, trange
 
 
-DATA_TYPES = (
-    "input_data",  
-    "human_summaries", # Human-created gold-standard model summary files
-    "baseline_summaries", # Official submission + baseline summary files
-)
-
-
 def get_path_from_docid(doc_id, split, data_store):
     if "_" in doc_id:  # Then the document is in ACQUAINT-2
         corpus_dir = data_store["acquaint-2"]
@@ -154,45 +147,29 @@ def read_data(xml_filename, split, data_store, test=False):
             print("writing to {}".format(json_path))
             json.dump(data, json_file, indent=2)
             print("finished writing to {}".format(json_path))
-    return data 
+    return data
 
 
-def filenames(data_type, split, year, data_store):
-    """
-    Args:
-        data_type (str): must be in DATA_TYPES and in config.json
-        split (str): training, devtest, or evaltest
-        year (str): 2009 or 2010 
-        data_store (dict): loaded config.json
-    
-    Returns:
-        A generator that gives one filename at a time.
-    """
-    dirname = os.path.join(data_store[data_type], split)   # Base path is the one from the config file
-    if split == "training":
-        dirname = os.path.join(dirname, str(year))
-    for f in os.listdir(dirname):
-        if data_type == "input_data" and not f.endswith(".xml"):
-            # Document specification files must have "*.xml" extension, so skip
-            continue 
-        yield os.path.join(dirname, f)
-
-
-def load_data(data_type, data_store, split, test=False, year=2010):
+def load_data(data_type, data_store, split, test=False):
     """
     Args:
         data_type (str): must be in DATA_TYPES and in config.json
         split (str): training, devtest, or evaltest
         year (int): data from the year of the task
     """
+    if split == "devtest":
+        year = 2010
+    elif split == "training":
+        year = 2009
 
-    assert data_type in DATA_TYPES 
-    fn_generator = filenames(data_type, split, year, data_store)
-    data = {}
-    for f in fn_generator:
-        file_data = read_data(f, split, data_store, test=test)
-        data.update(file_data)
-    return data
+    dirname = os.path.join(data_store[data_type], split)   # Base path is the one from the config file
+    if split == "training":
+        dirname = os.path.join(dirname, str(year))
+    files = [f for f in os.listdir(dirname) if f.endswith(".xml")]
+    assert len(files) == 1
+    xml_filename = files[0]
+    data = read_data(xml_filename, split, data_store, test=test)
+    return data, xml_filename
 
 
 if __name__ == "__main__":
