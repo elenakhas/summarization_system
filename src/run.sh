@@ -1,6 +1,6 @@
 #!/bin/sh
-# source /home2/schan2/anaconda3/etc/profile.d/conda.sh
-# conda activate /home2/schan2/anaconda3/envs/573
+source /home2/schan2/anaconda3/etc/profile.d/conda.sh
+conda activate /home2/schan2/anaconda3/envs/573
 # cd src/
 # python3 -m spacy download en_core_web_sm 
 python3 run_pipeline.py --split "devtest"
