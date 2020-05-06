@@ -7,7 +7,11 @@ from gensim.utils import simple_preprocess
 from gensim.models import LdaModel, LdaMulticore
 
 
-def lda_analysis(input_data):
+def lda_analysis(input_data, selected_json_path):
+    if os.path.exists(selected_json_path):
+        with open(selected_json_path) as infile:
+            return json.load(infile)
+    
     picked_sentences = {}
     #treat each set of documents as a separate corpus and find topics?
     for key, value in input_data.items():
@@ -77,6 +81,9 @@ def lda_analysis(input_data):
             summary_sentences[sent] = input_data[key][sent]
 
         picked_sentences[key] = summary_sentences
+    
+    with open(selected_json_path, "w") as outfile:
+        json.dump(picked_sentences, outfile, indent=2)
     return picked_sentences
 
 # MAIN #

@@ -2,6 +2,7 @@ import json
 import spacy
 from spacy.lang.en import English
 from tqdm import tqdm
+import os
 
 '''
 Utility functions - all performed for a spacy annotated document (sentence by sentence)
@@ -74,7 +75,11 @@ def process_documents_by_topic(documents):
             process_document(doc, i, topic_id, sentences_info[topic_id])
     return sentences_info
 
-def preprocess(data):
+def preprocess(data, preprocessed_json_path):
+    if os.path.exists(preprocessed_json_path):
+        with open(preprocessed_json_path) as infile:
+            return json.load(infile)
+    
     # MAIN #
     # data - the input from the previous stage - a json-like dictionary
     nlp = spacy.load("en_core_web_sm") # package
@@ -82,4 +87,6 @@ def preprocess(data):
     documents = preprocess_data(nlp, data) # returns a dict of lemmas; can dump to json, can keep it as a dict; documents - spacy preprocessed docs; dict {topic: list of docs}
     # summarize all the available info; takes a while
     sent_info = process_documents_by_topic(documents) # returns a dict {topic_id : {sentence string : {info dictionary}}}   
+    with open(preprocessed_json_path, "w") as outfile:
+        json.dump(sent_info, outfile, indent=2)
     return sent_info
