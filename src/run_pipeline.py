@@ -12,6 +12,7 @@ from generate_summaries import make_summaries
 
 
 def run(args):
+    print("running with args: {}".format(args))
     if args.run_id is None:
         args.run_id = "D2run0"
         # args.run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
@@ -35,7 +36,8 @@ def run(args):
 
     print("selecting content")
     start = time.time()
-    topic_sentences = lda_analysis(preprocessed_data)
+    topic_sentences = lda_analysis(preprocessed_data, os.path.join(
+        data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json.selected"))
     print("\tfinished selecting content in {}".format(time.time()-start))
     
     print("generating summaries")

@@ -3,9 +3,34 @@ import os
 import json
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+from nltk.corpus import wordnet as wn
+from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
+from nltk.util import ngrams
+from nltk.corpus import stopwords 
 import re
+import string
 
+
+def overlap_exists(query_toks, sentences, n=4):
+    query_ngrams = set(ngrams(query_toks, n))
+    for sent_toks in sentences:
+        sent_ngrams = set(ngrams(sent_toks, n))
+        if query_ngrams & sent_ngrams:
+            return True
+    return False
+
+
+def strip_attribution(line, n=8):
+    attribution_pattern = re.compile('[,]([^,\'\"]*?)[.]$')
+    match = attribution_pattern.search(line)
+    attribution_words = ("said", "stated", "according")
+    if match is not None and any(w in match.group(1) for w in attribution_words):
+        if len(word_tokenize(match.group(1))) <= n:
+            print(match.group(1))
+            line = re.sub(attribution_pattern, ".", line)
+    return line
+    
 
 def make_summaries(topic_dict, args, data_store):
     """
@@ -17,31 +42,44 @@ def make_summaries(topic_dict, args, data_store):
     value: list of summary sentences
 
     """
-
     summary_dict = dict()
+    stop_words = set(stopwords.words('english')) 
     for topic_id in topic_dict.keys():
         #print(topic_id)
         summary = []
+
+        summary_lemmas = []
+        summary_tokens = []
+
         summ_length = 0
         sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
         #print(sorted_keys)
 
-        for sentence in sorted_keys:
+        for orig_sentence in sorted_keys:
+            sentence = orig_sentence
             if summ_length >= 100:
                 break
 
             # remove all sentences that contain quotes
+            # quotes = ('"', "'", "`")
+            # if any(q in sentence for q in quotes):
+            #     continue
 
-            # ignore short sentences
-            if topic_dict[topic_id][sentence]['length'] <= 8:
-                continue
-
-            # remove parenthetical expressions
+            sentence = strip_attribution(sentence)
+            # rmeove parenthetical expressions
             sentence = re.sub("[\(\[].*?[\)\]]", "", sentence)
-
-            # get rid of adverbs
             tokens = word_tokenize(sentence)
+            tokens = [tok for tok in tokens if tok != "_"]
             pos_tags = [el[1] for el in pos_tag(tokens)]
+            lemmas = topic_dict[topic_id][orig_sentence]["lemmas"]
+
+            if overlap_exists(lemmas, summary_lemmas):
+                continue
+            
+            # ignore short sentences
+            if topic_dict[topic_id][orig_sentence]['length'] <= 8:
+                continue
+           
 
             adverb_indices = [i for i in range(len(pos_tags)) if pos_tags[i] == 'RB']
             #print(adverb_indices)
@@ -52,6 +90,8 @@ def make_summaries(topic_dict, args, data_store):
                 summ_length += len(tokens)
 
                 summary.append(TreebankWordDetokenizer().detokenize(tokens))
+                summary_lemmas.append(lemmas)
+                summary_tokens.append(tokens)
             else:
                 continue # keep going in case we find a shorter sentence to add
 
@@ -66,7 +106,7 @@ def make_summaries(topic_dict, args, data_store):
         out_dir = data_store["devtest_outdir"]
     for topic_id, sentences in summary_dict.items():
         write_to_file(out_dir, args.run_id, topic_id, sentences)
-
+    
 
 def write_to_file(out_dir, run_id, topic_id, sentences):
     id_part_1 = topic_id[:-1]
@@ -81,7 +121,12 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
         os.makedirs(out_dir)
     with open(output_path, "w") as outfile:
         for line in sentences:
-            outfile.write(line.replace("\\", "").replace(" ,", ", ").replace("  ", " ") + "\n")
+            # Formatting things that have no effect on word count
+            line = line.replace("\\", "").replace(" ,", ", ").replace(" .", ". ").replace("_", " ").replace("  ", " ")
+            line = re.sub('["] ([A-Za-z0-9])', '"\g<1>', line)  # Replace `" The` with `"The` 
+            line = line.replace(', "', '," ')
+            line = line.replace("``", ' "')
+            outfile.write(line + "\n")
 
 
 if __name__ == "__main__":
@@ -94,8 +139,6 @@ if __name__ == "__main__":
         topic_dictionary = json.load(infile)
 
     summaries_dict = make_summaries(topic_dictionary)
-
-    # TODO : add function call to write summaries to files here
 
 
 
