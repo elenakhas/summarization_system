@@ -14,8 +14,7 @@ from generate_summaries import make_summaries
 def run(args):
     print("running with args: {}".format(args))
     if args.run_id is None:
-        args.run_id = "D2run0"
-        # args.run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
+        args.run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
 
     with open(args.config) as infile:
         data_store = json.load(infile)
@@ -54,7 +53,7 @@ def run(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="config.json")
-    parser.add_argument("--deliverable", type=str, default="D2", help='deliverable number, i.e. D2')
+    parser.add_argument("--deliverable", type=str, default="D3", help='deliverable number')
     parser.add_argument("--split", type=str, default="training", choices=["devtest", "evaltest", "training"])
     parser.add_argument("--run_id", default=None)
     parser.add_argument("--test", action="store_true")
