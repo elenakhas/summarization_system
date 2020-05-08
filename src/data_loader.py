@@ -89,7 +89,7 @@ def process_acquaint2(path, doc_id):
     return document_string    
 
 
-def read_data(xml_filename, split, data_store, test=False):
+def read_data(xml_filename, split, data_store, test=False, overwrite=False):
     """
     Args:
         xml_filename (str): TAC documents specification
@@ -103,7 +103,7 @@ def read_data(xml_filename, split, data_store, test=False):
     json_path = os.path.join(data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json")
     if test:
         json_path += ".small"
-    if os.path.exists(json_path):
+    if os.path.exists(json_path) and not overwrite:
         with open(json_path) as infile:
             return json.load(infile)
 
@@ -150,7 +150,7 @@ def read_data(xml_filename, split, data_store, test=False):
     return data
 
 
-def load_data(data_type, data_store, split, test=False):
+def load_data(data_type, data_store, split, test=False, overwrite=False):
     """
     Args:
         data_type (str): must be in DATA_TYPES and in config.json
@@ -168,7 +168,7 @@ def load_data(data_type, data_store, split, test=False):
     files = [f for f in os.listdir(dirname) if f.endswith(".xml")]
     assert len(files) == 1
     xml_filename = os.path.join(dirname, files[0])
-    data = read_data(xml_filename, split, data_store, test=test)
+    data = read_data(xml_filename, split, data_store, test=test, overwrite=overwrite)
     return data, xml_filename
 
 

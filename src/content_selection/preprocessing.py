@@ -75,8 +75,8 @@ def process_documents_by_topic(documents):
             process_document(doc, i, topic_id, sentences_info[topic_id])
     return sentences_info
 
-def preprocess(data, preprocessed_json_path):
-    if os.path.exists(preprocessed_json_path):
+def preprocess(data, preprocessed_json_path, overwrite=False):
+    if os.path.exists(preprocessed_json_path) and not overwrite:
         with open(preprocessed_json_path) as infile:
             return json.load(infile)
     
