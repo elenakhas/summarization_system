@@ -7,8 +7,8 @@ from gensim.utils import simple_preprocess
 from gensim.models import LdaModel, LdaMulticore
 
 
-def lda_analysis(input_data, selected_json_path):
-    if os.path.exists(selected_json_path):
+def lda_analysis(input_data, selected_json_path, overwrite=False):
+    if os.path.exists(selected_json_path) and not overwrite:
         with open(selected_json_path) as infile:
             return json.load(infile)
     
