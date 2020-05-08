@@ -167,7 +167,7 @@ def load_data(data_type, data_store, split, test=False):
         dirname = os.path.join(dirname, str(year))
     files = [f for f in os.listdir(dirname) if f.endswith(".xml")]
     assert len(files) == 1
-    xml_filename = files[0]
+    xml_filename = os.path.join(dirname, files[0])
     data = read_data(xml_filename, split, data_store, test=test)
     return data, xml_filename
 
