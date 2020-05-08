@@ -49,7 +49,7 @@ def run(args):
 
     print("writing eval config")
     start = time.time()
-    write_eval_config(args, data_store, overwrite=False)
+    write_eval_config(args, data_store, overwrite=True)
     print("\tfinished writing eval config in {}".format(time.time()-start))
 
 

@@ -5,6 +5,6 @@
     "human_summaries":      "/dropbox/19-20/573/Data/models/",
     "baseline_summaries":   "/dropbox/19-20/573/Data/peers/",
     "working_dir":          "working_files",
-    "devtest_outdir":       "../outputs/D2/",
+    "devtest_outdir":       "../outputs/",
     "training_outdir":      "../outputs/train_output/"
 }

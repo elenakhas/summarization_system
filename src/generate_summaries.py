@@ -61,7 +61,7 @@ def make_summaries(topic_dict, args, data_store):
     if args.split == "training":
         out_dir = data_store["training_outdir"]
     elif args.split == "devtest":
-        out_dir = data_store["devtest_outdir"]
+        out_dir = os.path.join(data_store["devtest_outdir"], args.deliverable)
     for topic_id, sentences in summary_dict.items():
         write_to_file(out_dir, args.run_id, topic_id, sentences)
 
@@ -92,8 +92,5 @@ if __name__ == "__main__":
         topic_dictionary = json.load(infile)
 
     summaries_dict = make_summaries(topic_dictionary)
-
-    # TODO : add function call to write summaries to files here
-
 
 
