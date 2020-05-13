@@ -72,7 +72,7 @@ def lda_analysis(input_data, selected_json_path, overwrite=False):
 #             # IF YOU WANT ALL ONLY TOP N - USE THIS TILL THE END AND RETURN picked_sentences           
             sen_ranker.append((sen_score, k))
 
-        sorted_sentences = sorted(sen_ranker, key = lambda x : x[0], reverse = True)[0:5]
+        sorted_sentences = sorted(sen_ranker, key = lambda x : x[0], reverse = True)[0:10]
 
         for _sen in sorted_sentences:
             sent = _sen[1]
