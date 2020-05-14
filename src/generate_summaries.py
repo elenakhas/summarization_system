@@ -106,7 +106,7 @@ def make_coherent_summaries(topic_dict, args, data_store):
             sen_length = topic_dict[topic_id][sentence]['length']
             if sen_length <= 8 or sen_length > 50:
                 continue
-
+            print(sentence) #TODO: remove this
             sentence = apply_heuristics_to_sentence(sentence)
 
             tokens = apply_heuristics_to_tokens(word_tokenize(sentence))
