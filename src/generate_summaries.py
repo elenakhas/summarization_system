@@ -133,7 +133,7 @@ def make_coherent_summaries(topic_dict, args, data_store):
 
 
 def apply_heuristics_to_sentence(sentence):
-    if 'Helens' in sentence:
+    if 'eruption' in sentence:
         print(sentence)
     sentence = sentence.replace('or so', '')
     # remove parenthetical expressions () []
