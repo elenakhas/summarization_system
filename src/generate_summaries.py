@@ -134,11 +134,11 @@ def make_coherent_summaries(topic_dict, args, data_store):
 
 def apply_heuristics_to_sentence(sentence):
     # remove parenthetical expressions () []
-    sentence = re.sub("[\(\[].*?[\)\]]", "", sentence)
+    sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
 
     # remove expressions between -- --
     regexp = re.compile(r"([\-])\1.*\1\1")
-    sentence = re.sub(regexp, "", sentence)
+    sentence = re.sub(regexp, " ", sentence)
 
     return sentence
 
