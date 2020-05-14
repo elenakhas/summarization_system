@@ -161,10 +161,11 @@ def apply_heuristics_to_tokens(tokens):
     adverb_indices = [i for i in range(len(pos_tags)) if pos_tags[i] == 'RB']
 
     # don't get rid of 'so
-    if 'so' in tokens:
-        i = tokens.index('so')
-        #print(i)
-        adverb_indices.remove(i)
+    for word in tokens:
+        if word == 'so':
+            i = tokens.index('so')
+            #print(i)
+            adverb_indices.remove(i)
 
 
     for i in sorted(adverb_indices, reverse=True):
