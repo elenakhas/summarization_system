@@ -149,7 +149,10 @@ def apply_heuristics_to_sentence(sentence):
     # remove ages
     sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
 
-    return sentence.capitalize()
+    # remove gerunds
+    sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
+
+    return sentence.strip()
 
 def apply_heuristics_to_tokens(tokens):
     # get rid of adverbs
@@ -159,6 +162,9 @@ def apply_heuristics_to_tokens(tokens):
 
     for i in sorted(adverb_indices, reverse=True):
         tokens.pop(i)
+
+    # make sure the first letter of the sentence is capitalized
+    tokens[0] = tokens[0].capitalize()
     return tokens
 
 def score_coherence(sentences):
