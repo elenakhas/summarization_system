@@ -1,7 +1,6 @@
 import argparse
 import os
-import json
-from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.tokenize import word_tokenize
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk import pos_tag
 import re
