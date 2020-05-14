@@ -145,6 +145,7 @@ def apply_heuristics_to_sentence(sentence):
     sentence = sentence.replace('At this point, ', '')
     sentence = sentence.replace(', however,', '')
     sentence = sentence.replace(', also, ', '')
+    sentence = sentence.replace('or so', ' ')
 
     # remove ages
     sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
@@ -156,21 +157,23 @@ def apply_heuristics_to_sentence(sentence):
 
 def apply_heuristics_to_tokens(tokens):
     # get rid of adverbs
-    #pos_tags = [el[1] for el in pos_tag(tokens)]
+    pos_tags = [el[1] for el in pos_tag(tokens)]
 
-    #adverb_indices = [i for i in range(len(pos_tags)) if 'RB' in pos_tags[i]]
+    adverb_indices = [i for i in range(len(pos_tags)) if 'RB' in pos_tags[i]]
 
-    # don't get rid of 'so
-    #if len(pos_tags) - 2 in adverb_indices:
-       # adverb_indices.remove(len(pos_tags) - 2)
+    # don't get rid of adverb at end of sentence
+    if len(pos_tags) - 2 in adverb_indices:
+        adverb_indices.remove(len(pos_tags) - 2)
+
+
     # for word in tokens:
         #if word == 'so':
            # i = tokens.index('so')
             #print(i)
             #adverb_indices.remove(i)
 
-    #for i in sorted(adverb_indices, reverse=True):
-        #tokens.pop(i)
+    for i in sorted(adverb_indices, reverse=True):
+        tokens.pop(i)
 
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
