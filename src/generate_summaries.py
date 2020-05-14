@@ -17,6 +17,67 @@ def strip_attribution(line, n=4):
     return line
 
 
+# def make_summaries(topic_dict, args, data_store):
+#     """
+#     given a topic dictionary, generates summaries for each topic
+#     Args:
+#         topic_dict: dictionary of {topic_id: {sentence: {sentence info}}}
+#
+#     Returns: dictionary of summaries for each topic id. key: topic_id,
+#     value: list of summary sentences
+#
+#     """
+#
+#     summary_dict = dict()
+#     for topic_id in topic_dict.keys():
+#         #print(topic_id)
+#         summary = []
+#         summ_length = 0
+#         sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
+#         #print(sorted_keys)
+#
+#         for sentence in sorted_keys:
+#             if summ_length >= 100:
+#                 break
+#
+#             # ignore short sentences
+#             sen_length = topic_dict[topic_id][sentence]['length']
+#             if sen_length <= 8 or sen_length > 50:
+#                 continue
+#
+#             # remove parenthetical expressions
+#             sentence = re.sub("[\(\[].*?[\)\]]", "", sentence)
+#
+#             # get rid of adverbs
+#             tokens = word_tokenize(sentence)
+#             pos_tags = [el[1] for el in pos_tag(tokens)]
+#
+#             adverb_indices = [i for i in range(len(pos_tags)) if pos_tags[i] == 'RB']
+#             #print(adverb_indices)
+#             for i in sorted(adverb_indices, reverse=True):
+#                 tokens.pop(i)
+#             #print(tokens, pos_tags)
+#             if summ_length + len(tokens) <= 100:
+#                 summ_length += len(tokens)
+#
+#                 summary.append(TreebankWordDetokenizer().detokenize(tokens))
+#             else:
+#                 continue # keep going in case we find a shorter sentence to add
+#
+#         # print("length of summary is {}".format(summ_length))
+#         summary_dict[topic_id] = summary
+#         # print(summary)
+#     # print("length of summary dict is {}".format(len(summary_dict)))
+#
+#     if args.split == "training":
+#         out_dir = data_store["training_outdir"]
+#     elif args.split == "devtest":
+#         out_dir = os.path.join(data_store["devtest_outdir"], args.deliverable)
+#     for topic_id, sentences in summary_dict.items():
+#         write_to_file(out_dir, args.run_id, topic_id, sentences)
+
+
+
 def make_summaries(topic_dict, args, data_store):
     """
     given a topic dictionary, generates summaries for each topic
@@ -45,68 +106,6 @@ def make_summaries(topic_dict, args, data_store):
             if sen_length <= 8 or sen_length > 50:
                 continue
 
-            # remove parenthetical expressions
-            sentence = re.sub("[\(\[].*?[\)\]]", "", sentence)
-
-            # get rid of adverbs
-            tokens = word_tokenize(sentence)
-            pos_tags = [el[1] for el in pos_tag(tokens)]
-
-            adverb_indices = [i for i in range(len(pos_tags)) if pos_tags[i] == 'RB']
-            #print(adverb_indices)
-            for i in sorted(adverb_indices, reverse=True):
-                tokens.pop(i)
-            #print(tokens, pos_tags)
-            if summ_length + len(tokens) <= 100:
-                summ_length += len(tokens)
-
-                summary.append(TreebankWordDetokenizer().detokenize(tokens))
-            else:
-                continue # keep going in case we find a shorter sentence to add
-
-        # print("length of summary is {}".format(summ_length))
-        summary_dict[topic_id] = summary
-        # print(summary)
-    # print("length of summary dict is {}".format(len(summary_dict)))
-
-    if args.split == "training":
-        out_dir = data_store["training_outdir"]
-    elif args.split == "devtest":
-        out_dir = os.path.join(data_store["devtest_outdir"], args.deliverable)
-    for topic_id, sentences in summary_dict.items():
-        write_to_file(out_dir, args.run_id, topic_id, sentences)
-
-
-
-
-def make_coherent_summaries(topic_dict, args, data_store):
-    """
-    given a topic dictionary, generates summaries for each topic
-    Args:
-        topic_dict: dictionary of {topic_id: {sentence: {sentence info}}}
-
-    Returns: dictionary of summaries for each topic id. key: topic_id,
-    value: list of summary sentences
-
-    """
-
-    summary_dict = dict()
-    for topic_id in topic_dict.keys():
-        #print(topic_id)
-        summary = []
-        summ_length = 0
-        sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
-        #print(sorted_keys)
-
-        for sentence in sorted_keys:
-            if summ_length >= 100:
-                break
-
-            # ignore short sentences
-            sen_length = topic_dict[topic_id][sentence]['length']
-            if sen_length <= 8 or sen_length > 50:
-                continue
-            print(sentence) #TODO: remove this
             sentence = apply_heuristics_to_sentence(sentence)
 
             tokens = apply_heuristics_to_tokens(word_tokenize(sentence))
@@ -134,7 +133,7 @@ def make_coherent_summaries(topic_dict, args, data_store):
 
 def apply_heuristics_to_sentence(sentence):
     print(sentence)
-    sentence = sentence.replace('or so', '')
+    #sentence = sentence.replace('or so', '')
     # remove parenthetical expressions () []
     sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
 
@@ -143,17 +142,17 @@ def apply_heuristics_to_sentence(sentence):
     sentence = re.sub(regexp, " ", sentence)
 
     # remove unnecessary phrases
-    sentence = sentence.replace('As a matter of fact, ', '')
-    sentence = sentence.replace('At this point, ', '')
-    sentence = sentence.replace(', however,', '')
-    sentence = sentence.replace(', also, ', '')
+    #sentence = sentence.replace('As a matter of fact, ', '')
+    #sentence = sentence.replace('At this point, ', '')
+    #sentence = sentence.replace(', however,', '')
+    #sentence = sentence.replace(', also, ', '')
 
 
     # remove ages
-    sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
+    #sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
 
     # remove gerunds
-    sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
+    #sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
 
     return sentence.strip()
 
@@ -216,6 +215,6 @@ if __name__ == "__main__":
     with open(args.candidates) as infile:
         topic_dictionary = json.load(infile)
 
-    summaries_dict = make_coherent_summaries(topic_dictionary) #TODO: change this back if you want to call original function
+    summaries_dict = make_summaries(topic_dictionary)
 
 
