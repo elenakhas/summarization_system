@@ -158,26 +158,23 @@ def apply_heuristics_to_tokens(tokens):
     # get rid of adverbs
     pos_tags = [el[1] for el in pos_tag(tokens)]
 
-    if "Helens" in tokens:
-        print(pos_tags)
-
     adverb_indices = [i for i in range(len(pos_tags)) if 'RB' in pos_tags[i]]
 
     # don't get rid of 'so
-    for word in tokens:
-        if word == 'so':
-            i = tokens.index('so')
+    if len(pos_tags) - 2 in adverb_indices:
+        adverb_indices.remove(len(pos_tags) - 2)
+    # for word in tokens:
+        #if word == 'so':
+           # i = tokens.index('so')
             #print(i)
-            adverb_indices.remove(i)
-
+            #adverb_indices.remove(i)
 
     for i in sorted(adverb_indices, reverse=True):
         tokens.pop(i)
 
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
-    if "Helens" in tokens:
-        print(tokens)
+
     return tokens
 
 def score_coherence(sentences):
