@@ -7,6 +7,17 @@ from nltk import pos_tag
 import re
 
 
+def strip_attribution(line, n=4):
+    attribution_pattern = re.compile('[,]([^,\'\"]*?)[.]$')
+    match = attribution_pattern.search(line)
+    attribution_words = ("said", "stated", "according")
+    if match is not None and any(w in match.group(1) for w in attribution_words):
+        if len(word_tokenize(match.group(1))) <= n:
+            # print(match.group(1))
+            line = re.sub(attribution_pattern, ".", line)
+    return line
+
+
 def make_summaries(topic_dict, args, data_store):
     """
     given a topic dictionary, generates summaries for each topic
@@ -79,7 +90,13 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
         os.makedirs(out_dir)
     with open(output_path, "w") as outfile:
         for line in sentences:
-            outfile.write(line.replace("\\", "").replace(" ,", ", ") + "\n")
+            line = line.replace("\\", "").replace(" ,", ", ").replace(" .", ". ").replace("_", " ").replace("  ", " ")
+            line = re.sub('["] ([A-Za-z0-9])', '"\g<1>', line)  # Replace `" The` with `"The` 
+            line = line.replace(', "', '," ')
+            line = line.replace("``", ' "')
+
+            line = strip_attribution(line)
+            outfile.write(line + "\n")
 
 
 if __name__ == "__main__":
