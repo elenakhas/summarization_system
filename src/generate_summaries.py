@@ -163,6 +163,7 @@ def apply_heuristics_to_tokens(tokens):
     # don't get rid of 'so
     if 'so' in tokens:
         i = tokens.index('so')
+        #print(i)
         adverb_indices.remove(i)
 
 
@@ -171,6 +172,7 @@ def apply_heuristics_to_tokens(tokens):
 
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
+
     return tokens
 
 def score_coherence(sentences):
