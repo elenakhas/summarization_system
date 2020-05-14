@@ -41,7 +41,8 @@ def make_summaries(topic_dict, args, data_store):
                 break
 
             # ignore short sentences
-            if topic_dict[topic_id][sentence]['length'] <= 8:
+            sen_length = topic_dict[topic_id][sentence]['length']
+            if sen_length <= 8:
                 continue
 
             # remove parenthetical expressions
