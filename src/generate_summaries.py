@@ -140,7 +140,10 @@ def apply_heuristics_to_sentence(sentence):
     regexp = re.compile(r"([\-])\1.*\1\1")
     sentence = re.sub(regexp, " ", sentence)
 
-    return sentence
+    sentence = sentence.replace('As a matter of fact, ', '')
+    sentence = sentence.replace('At this point, ', '')
+
+    return sentence.capitalize()
 
 def apply_heuristics_to_tokens(tokens):
     # get rid of adverbs
