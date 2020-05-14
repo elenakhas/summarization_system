@@ -158,7 +158,7 @@ def apply_heuristics_to_tokens(tokens):
     # get rid of adverbs
     pos_tags = [el[1] for el in pos_tag(tokens)]
 
-    adverb_indices = [i for i in range(len(pos_tags)) if pos_tags[i] == 'RB']
+    adverb_indices = [i for i in range(len(pos_tags)) if 'RB' in pos_tags[i]]
 
     # don't get rid of 'so
     for word in tokens:
