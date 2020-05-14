@@ -140,10 +140,14 @@ def apply_heuristics_to_sentence(sentence):
     regexp = re.compile(r"([\-])\1.*\1\1")
     sentence = re.sub(regexp, " ", sentence)
 
+    # remove unnecessary phrases
     sentence = sentence.replace('As a matter of fact, ', '')
     sentence = sentence.replace('At this point, ', '')
     sentence = sentence.replace(', however,', '')
     sentence = sentence.replace(', also, ', '')
+
+    # remove ages
+    sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
 
     return sentence.capitalize()
 
