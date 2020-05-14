@@ -19,6 +19,11 @@ def tokenize(sentence_list, model_name="bert-base-cased"):
 
 
 def make_embeddings(sentence_list, model_name="bert-base-cased"):
+    """
+    Given a list of sentences, return their embeddings.
+    The embeddings are a mean over the last hidden layer of 
+    a pretrained BERT model.
+    """
     inputs_list = tokenize(sentence_list)
     model = BertModel.from_pretrained(model_name)
     sentence_embeddings = []

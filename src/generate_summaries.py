@@ -12,13 +12,15 @@ PARENS_PATTERN = re.compile("[\(\[].*?[\)\]]")
 QUOTESPACE_PATTERN = re.compile('["] ([A-Za-z0-9])')
 
 
-def strip_attribution(line, n=6):
+def strip_attribution(line, n=5):
     match = ATTR_PATTERN.search(line)
     attribution_words = ("said", "stated", "according")
     if match is not None and any(w in match.group(1) for w in attribution_words):
         if len(word_tokenize(match.group(1))) <= n:
+            # print(line)
             # print(match.group(1))
             line = ATTR_PATTERN.sub(".", line)
+            # print(line)
     return line
 
 
