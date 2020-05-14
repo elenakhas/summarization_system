@@ -133,6 +133,7 @@ def make_coherent_summaries(topic_dict, args, data_store):
 
 
 def apply_heuristics_to_sentence(sentence):
+    sentence = sentence.replace('or so', '')
     # remove parenthetical expressions () []
     sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
 
@@ -145,7 +146,7 @@ def apply_heuristics_to_sentence(sentence):
     sentence = sentence.replace('At this point, ', '')
     sentence = sentence.replace(', however,', '')
     sentence = sentence.replace(', also, ', '')
-    sentence = sentence.replace('or so', ' ')
+
 
     # remove ages
     sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
