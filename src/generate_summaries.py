@@ -150,7 +150,7 @@ def apply_heuristics_to_sentence(sentence):
 
 
     # remove ages
-    sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
+    sentence = re.sub("(, aged \d+,)", "", sentence)
 
     # remove gerunds
     #sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
