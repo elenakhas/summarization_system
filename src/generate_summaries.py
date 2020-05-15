@@ -67,6 +67,7 @@ def make_summaries(topic_dict, args, data_store):
 
         # do information ordering for summary
         best_summary = score_coherence(summary)
+        print(best_summary)
 
         summary_dict[topic_id] = best_summary
         # print(summary)
@@ -120,7 +121,7 @@ def score_coherence(summary):
     for option in candidate_dict.keys():
         candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
 
-    print(candidate_dict)
+
 
     return max(candidate_dict.items(), key=operator.itemgetter(1))[0]
 
