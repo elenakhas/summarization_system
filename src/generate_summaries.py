@@ -5,6 +5,7 @@ from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk import pos_tag
 from itertools import permutations
 from compute_similarity import remove_stopwords, add_lemmas
+import spacy
 import re
 
 
