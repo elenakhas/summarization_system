@@ -152,8 +152,8 @@ def apply_heuristics_to_sentence(sentence):
     sentence = re.sub(", aged \d+,", "", sentence)
 
     # remove gerunds
-    #sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
-
+    sentence = re.sub("^[A-Za-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
+    # (, [a-z]+[ing][\sa-zA-Z\d]+,|
     return sentence.strip()
 
 def apply_heuristics_to_tokens(tokens):
