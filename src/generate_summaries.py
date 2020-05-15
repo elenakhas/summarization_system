@@ -78,7 +78,7 @@ def make_summaries(topic_dict, args, data_store):
 
 def score_coherence(summary):
     perms = permutations(summary, len(summary))
-
+    spacy_lm = spacy.load("en_core_web_lg")
     for count, p in enumerate(perms):
         print("count is {}".format(count))
         for i in range(1, len(p)):
