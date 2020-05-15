@@ -1,4 +1,5 @@
 import argparse
+import operator
 import os
 from nltk.tokenize import word_tokenize
 from nltk.tokenize.treebank import TreebankWordDetokenizer
@@ -113,11 +114,11 @@ def score_coherence(summary):
 
     #print(candidate_dict)
     # divide by n-1
-   # for option in candidate_dict.keys():
-       # candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
+    for option in candidate_dict.keys():
+        candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
 
 
-    return max(candidate_dict, key=lambda key: candidate_dict[key]/(ord_count -1))
+    return max(candidate_dict.items(), key=operator.itemgetter(1))[0]
 
 
 def calculate_similarity(s1, s2):
