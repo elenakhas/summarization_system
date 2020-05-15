@@ -132,7 +132,7 @@ def make_summaries(topic_dict, args, data_store):
 
 
 def apply_heuristics_to_sentence(sentence):
-    print(sentence)
+    #print(sentence)
     #sentence = sentence.replace('or so', '')
     # remove parenthetical expressions () []
     sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
@@ -149,10 +149,10 @@ def apply_heuristics_to_sentence(sentence):
 
 
     # remove ages
-    #sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
+    sentence = re.sub(", aged \d+,", "", sentence)
 
     # remove gerunds
-    #sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
+    sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
 
     return sentence.strip()
 
