@@ -150,7 +150,7 @@ def apply_heuristics_to_sentence(sentence):
 
 
     # remove ages
-    #sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
+    sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
 
     # remove gerunds
     #sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
@@ -162,8 +162,8 @@ def apply_heuristics_to_tokens(tokens):
     pos_tags = [el[1] for el in pos_tag(tokens)]
 
     adverb_indices = [i for i in range(len(pos_tags)) if 'RB' in pos_tags[i]]
-    for i in adverb_indices:
-        print("adverb: {}".format(tokens[i]))
+    #for i in adverb_indices:
+        #print("adverb: {}".format(tokens[i]))
 
     # don't get rid of adverb at end of sentence
     if len(pos_tags) - 2 in adverb_indices:
