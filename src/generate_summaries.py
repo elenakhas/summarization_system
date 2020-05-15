@@ -108,8 +108,10 @@ def make_summaries(topic_dict, args, data_store):
 
             sentence = apply_heuristics_to_sentence(sentence)
 
-            tokens = apply_heuristics_to_tokens(word_tokenize(sentence))
+            #tokens = apply_heuristics_to_tokens(word_tokenize(sentence))
 
+            tokens = word_tokenize(sentence)
+            tokens[0] = tokens[0].capitalize()
 
             if summ_length + len(tokens) <= 100:
                 summ_length += len(tokens)
