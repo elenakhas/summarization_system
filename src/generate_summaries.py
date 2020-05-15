@@ -127,7 +127,7 @@ def calculate_similarity(s1, s2):
     Returns: cosine similarity score
 
     """
-    return calculate_similarity(s1, s2)
+    return s1.similarity(s2)
 
 # def make_summaries(topic_dict, args, data_store):
 #     """
