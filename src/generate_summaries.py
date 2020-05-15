@@ -67,7 +67,7 @@ def make_summaries(topic_dict, args, data_store):
 
         # do information ordering for summary
         best_summary = score_coherence(summary)
-        print(best_summary)
+        print("best summary is {}".format(best_summary))
 
         summary_dict[topic_id] = best_summary
         # print(summary)
@@ -112,7 +112,7 @@ def score_coherence(summary):
             except KeyError:
                 candidate_dict[ord_count] = cos_score
 
-            print(candidate_dict)
+            #print(candidate_dict)
 
         ord_count += 1
 
