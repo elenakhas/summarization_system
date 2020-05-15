@@ -80,9 +80,9 @@ def make_summaries(topic_dict, args, data_store):
         write_to_file(out_dir, args.run_id, topic_id, sentences)
 
 def score_coherence(summary):
-    print("summary is: {}".format(summary))
-    if not summary:
-        return
+    if len(summary) == 1:
+        return summary
+
     perms = permutations(summary, len(summary))
    # spacy_lm = spacy.load("en_core_web_lg")  #TODO we do not want to be loading this here - way too slow
     candidate_dict = dict()
