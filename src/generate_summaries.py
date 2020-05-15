@@ -6,6 +6,7 @@ from nltk import pos_tag
 from itertools import permutations
 from compute_similarity import remove_stopwords, add_lemmas
 import spacy
+spacy_lm = spacy.load("en_core_web_lg")
 import re
 
 
@@ -79,9 +80,13 @@ def make_summaries(topic_dict, args, data_store):
 
 def score_coherence(summary):
     perms = permutations(summary, len(summary))
-    spacy_lm = spacy.load("en_core_web_lg")
-    for count, p in enumerate(perms):
-        print("count is {}".format(count))
+   # spacy_lm = spacy.load("en_core_web_lg")  #TODO we do not want to be loading this here - way too slow
+    candidate_dict = dict()
+
+    # go through all the permutations of sentence orderings
+    sen_count = 1
+    for p in perms:
+
         for i in range(1, len(p)):
             #print(p[i-1], p[i])
 
@@ -94,7 +99,22 @@ def score_coherence(summary):
             s1_processed = add_lemmas(s1_no_stop, spacy_lm)
             s2_processed = add_lemmas(s2_no_stop, spacy_lm)
 
-            print(s1_processed.similarity(s2_processed))
+            #print(s1_processed.similarity(s2_processed))
+            cos_score = calculate_similarity(s1_processed, s2_processed)
+
+            try:
+                candidate_dict[sen_count] += cos_score
+            except KeyError:
+                candidate_dict[sen_count] = cos_score
+
+        p += 1
+
+    # divide by n-1
+    for option in candidate_dict.keys():
+        candidate_dict[option] = candidate_dict[option] / (sen_count - 1)
+
+
+    return max(candidate_dict, key=lambda key: candidate_dict[key])
 
 
 def calculate_similarity(s1, s2):
@@ -107,6 +127,7 @@ def calculate_similarity(s1, s2):
     Returns: cosine similarity score
 
     """
+    return calculate_similarity(s1, s2)
 
 # def make_summaries(topic_dict, args, data_store):
 #     """
