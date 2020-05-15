@@ -111,13 +111,13 @@ def score_coherence(summary):
 
         ord_count += 1
 
-    print(candidate_dict)
+    #print(candidate_dict)
     # divide by n-1
-    for option in candidate_dict.keys():
-        candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
+   # for option in candidate_dict.keys():
+       # candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
 
 
-    return max(candidate_dict, key=lambda key: candidate_dict[key])
+    return max(candidate_dict, key=lambda key: candidate_dict[key]/(ord_count -1))
 
 
 def calculate_similarity(s1, s2):
