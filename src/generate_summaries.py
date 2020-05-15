@@ -109,6 +109,7 @@ def score_coherence(summary):
 
         sen_count += 1
 
+    print(candidate_dict)
     # divide by n-1
     for option in candidate_dict.keys():
         candidate_dict[option] = candidate_dict[option] / (sen_count - 1)
