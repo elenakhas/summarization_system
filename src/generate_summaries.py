@@ -108,9 +108,9 @@ def score_coherence(summary):
             cos_score = calculate_similarity(s1_processed, s2_processed)
 
             try:
-                candidate_dict[ord_count] += cos_score
+                candidate_dict[p] += cos_score
             except KeyError:
-                candidate_dict[ord_count] = cos_score
+                candidate_dict[p] = cos_score
 
             #print(candidate_dict)
 
@@ -120,8 +120,6 @@ def score_coherence(summary):
     # divide by n-1
     for option in candidate_dict.keys():
         candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
-
-
 
     return max(candidate_dict.items(), key=operator.itemgetter(1))[0]
 
