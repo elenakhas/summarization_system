@@ -111,7 +111,6 @@ def make_summaries(topic_dict, args, data_store):
             tokens = apply_heuristics_to_tokens(word_tokenize(sentence))
 
 
-
             if summ_length + len(tokens) <= 100:
                 summ_length += len(tokens)
 
@@ -133,11 +132,10 @@ def make_summaries(topic_dict, args, data_store):
 
 
 def apply_heuristics_to_sentence(sentence):
-    #print(sentence)
+    print(sentence)
     #sentence = sentence.replace('or so', '')
     # remove parenthetical expressions () []
     sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
-
 
     # remove expressions between -- --
     regexp = re.compile(r"([\-])\1.*\1\1")
@@ -151,10 +149,10 @@ def apply_heuristics_to_sentence(sentence):
 
 
     # remove ages
-    sentence = re.sub("(, aged \d+,)", "", sentence)
+    #sentence = re.sub("(, aged \d+,|, \d+,)", "", sentence)
 
     # remove gerunds
-    sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
+    #sentence = re.sub("(, [a-z]+[ing][\sa-zA-Z\d]+,|^[A-Za-z]+[ing][\sa-zA-Z\d]+,)", "", sentence)
 
     return sentence.strip()
 
@@ -163,8 +161,6 @@ def apply_heuristics_to_tokens(tokens):
     pos_tags = [el[1] for el in pos_tag(tokens)]
 
     adverb_indices = [i for i in range(len(pos_tags)) if 'RB' in pos_tags[i]]
-    #for i in adverb_indices:
-        #print("adverb: {}".format(tokens[i]))
 
     # don't get rid of adverb at end of sentence
     if len(pos_tags) - 2 in adverb_indices:
