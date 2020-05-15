@@ -137,6 +137,7 @@ def apply_heuristics_to_sentence(sentence):
     # remove parenthetical expressions () []
     sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
 
+
     # remove expressions between -- --
     regexp = re.compile(r"([\-])\1.*\1\1")
     sentence = re.sub(regexp, " ", sentence)
@@ -161,6 +162,8 @@ def apply_heuristics_to_tokens(tokens):
     pos_tags = [el[1] for el in pos_tag(tokens)]
 
     adverb_indices = [i for i in range(len(pos_tags)) if 'RB' in pos_tags[i]]
+    for i in adverb_indices:
+        print("adverb: {}".format(tokens[i]))
 
     # don't get rid of adverb at end of sentence
     if len(pos_tags) - 2 in adverb_indices:
