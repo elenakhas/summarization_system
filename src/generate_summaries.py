@@ -84,7 +84,7 @@ def score_coherence(summary):
     candidate_dict = dict()
 
     # go through all the permutations of sentence orderings
-    sen_count = 1
+    ord_count = 1
     for p in perms:
 
         for i in range(1, len(p)):
@@ -101,18 +101,20 @@ def score_coherence(summary):
 
             #print(s1_processed.similarity(s2_processed))
             cos_score = calculate_similarity(s1_processed, s2_processed)
-
+            print(cos_score)
             try:
-                candidate_dict[sen_count] += cos_score
+                candidate_dict[ord_count] += cos_score
             except KeyError:
-                candidate_dict[sen_count] = cos_score
+                candidate_dict[ord_count] = cos_score
 
-        sen_count += 1
+            print(candidate_dict)
+
+        ord_count += 1
 
     print(candidate_dict)
     # divide by n-1
     for option in candidate_dict.keys():
-        candidate_dict[option] = candidate_dict[option] / (sen_count - 1)
+        candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
 
 
     return max(candidate_dict, key=lambda key: candidate_dict[key])
