@@ -107,7 +107,7 @@ def score_coherence(summary):
             except KeyError:
                 candidate_dict[sen_count] = cos_score
 
-        p += 1
+        sen_count += 1
 
     # divide by n-1
     for option in candidate_dict.keys():
