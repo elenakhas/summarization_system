@@ -136,17 +136,12 @@ def score_coherence(summary):
         for i in range(1, len(p)):
             #print(p[i-1], p[i])
 
-            #calculate_similarity(p[i - 1], p[i])
+            cos_score = calculate_similarity(p[i - 1], p[i])
 
-            s1 = spacy_lm(p[i-1].lower())
-            s2 = spacy_lm(p[i].lower())
-            s1_no_stop = remove_stopwords(s1, spacy_lm)
-            s2_no_stop = remove_stopwords(s2, spacy_lm)
-            s1_processed = add_lemmas(s1_no_stop, spacy_lm)
-            s2_processed = add_lemmas(s2_no_stop, spacy_lm)
+
 
             #print(s1_processed.similarity(s2_processed))
-            cos_score = calculate_similarity(s1_processed, s2_processed)
+            #cos_score = calculate_similarity(s1_processed, s2_processed)
 
             try:
                 candidate_dict[p] += cos_score
@@ -175,6 +170,12 @@ def calculate_similarity(s1, s2):
     Returns: cosine similarity score
 
     """
+    s1 = spacy_lm(s1.lower())
+    s2 = spacy_lm(s2.lower())
+    s1_no_stop = remove_stopwords(s1, spacy_lm)
+    s2_no_stop = remove_stopwords(s2, spacy_lm)
+    s1_processed = add_lemmas(s1_no_stop, spacy_lm)
+    s2_processed = add_lemmas(s2_no_stop, spacy_lm)
     return s1.similarity(s2)
 
 
