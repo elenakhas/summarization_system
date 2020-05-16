@@ -1,7 +1,11 @@
 <ROUGE_EVAL version="1.5.5">
   <EVAL ID="D0901-A.M.100.A">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0901-A.M.100.A.D2run0</P>
@@ -15,7 +19,11 @@
   </EVAL>
   <EVAL ID="D0902-A.M.100.A">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0902-A.M.100.A.D2run0</P>
@@ -29,7 +37,11 @@
   </EVAL>
   <EVAL ID="D0903-A.M.100.A">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0903-A.M.100.A.D2run0</P>
@@ -43,7 +55,11 @@
   </EVAL>
   <EVAL ID="D0904-A.M.100.A">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0904-A.M.100.A.D2run0</P>
@@ -57,7 +73,11 @@
   </EVAL>
   <EVAL ID="D0905-A.M.100.A">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0905-A.M.100.A.D2run0</P>
@@ -71,7 +91,11 @@
   </EVAL>
   <EVAL ID="D0906-A.M.100.B">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0906-A.M.100.B.D2run0</P>
@@ -85,7 +109,11 @@
   </EVAL>
   <EVAL ID="D0907-A.M.100.B">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0907-A.M.100.B.D2run0</P>
@@ -99,7 +127,11 @@
   </EVAL>
   <EVAL ID="D0908-A.M.100.B">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0908-A.M.100.B.D2run0</P>
@@ -113,7 +145,11 @@
   </EVAL>
   <EVAL ID="D0909-A.M.100.B">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0909-A.M.100.B.D2run0</P>
@@ -127,7 +163,11 @@
   </EVAL>
   <EVAL ID="D0910-A.M.100.B">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0910-A.M.100.B.D2run0</P>
@@ -141,7 +181,11 @@
   </EVAL>
   <EVAL ID="D0911-A.M.100.C">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0911-A.M.100.C.D2run0</P>
@@ -155,7 +199,11 @@
   </EVAL>
   <EVAL ID="D0912-A.M.100.C">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0912-A.M.100.C.D2run0</P>
@@ -169,7 +217,11 @@
   </EVAL>
   <EVAL ID="D0913-A.M.100.C">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0913-A.M.100.C.D2run0</P>
@@ -183,7 +235,11 @@
   </EVAL>
   <EVAL ID="D0914-A.M.100.C">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0914-A.M.100.C.D2run0</P>
@@ -197,7 +253,11 @@
   </EVAL>
   <EVAL ID="D0915-A.M.100.C">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0915-A.M.100.C.D2run0</P>
@@ -211,7 +271,11 @@
   </EVAL>
   <EVAL ID="D0916-A.M.100.C">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0916-A.M.100.C.D2run0</P>
@@ -225,7 +289,11 @@
   </EVAL>
   <EVAL ID="D0917-A.M.100.C">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0917-A.M.100.C.D2run0</P>
@@ -239,7 +307,11 @@
   </EVAL>
   <EVAL ID="D0918-A.M.100.D">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0918-A.M.100.D.D2run0</P>
@@ -253,7 +325,11 @@
   </EVAL>
   <EVAL ID="D0919-A.M.100.D">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0919-A.M.100.D.D2run0</P>
@@ -267,7 +343,11 @@
   </EVAL>
   <EVAL ID="D0920-A.M.100.D">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0920-A.M.100.D.D2run0</P>
@@ -281,7 +361,11 @@
   </EVAL>
   <EVAL ID="D0921-A.M.100.D">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0921-A.M.100.D.D2run0</P>
@@ -295,7 +379,11 @@
   </EVAL>
   <EVAL ID="D0922-A.M.100.D">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0922-A.M.100.D.D2run0</P>
@@ -309,7 +397,11 @@
   </EVAL>
   <EVAL ID="D0923-A.M.100.D">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0923-A.M.100.D.D2run0</P>
@@ -323,7 +415,11 @@
   </EVAL>
   <EVAL ID="D0924-A.M.100.D">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0924-A.M.100.D.D2run0</P>
@@ -337,7 +433,11 @@
   </EVAL>
   <EVAL ID="D0925-A.M.100.E">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0925-A.M.100.E.D2run0</P>
@@ -351,7 +451,11 @@
   </EVAL>
   <EVAL ID="D0926-A.M.100.E">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0926-A.M.100.E.D2run0</P>
@@ -365,7 +469,11 @@
   </EVAL>
   <EVAL ID="D0927-A.M.100.E">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0927-A.M.100.E.D2run0</P>
@@ -379,7 +487,11 @@
   </EVAL>
   <EVAL ID="D0928-A.M.100.E">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0928-A.M.100.E.D2run0</P>
@@ -393,7 +505,11 @@
   </EVAL>
   <EVAL ID="D0929-A.M.100.E">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0929-A.M.100.E.D2run0</P>
@@ -407,7 +523,11 @@
   </EVAL>
   <EVAL ID="D0930-A.M.100.F">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0930-A.M.100.F.D2run0</P>
@@ -421,7 +541,11 @@
   </EVAL>
   <EVAL ID="D0931-A.M.100.F">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0931-A.M.100.F.D2run0</P>
@@ -435,7 +559,11 @@
   </EVAL>
   <EVAL ID="D0932-A.M.100.F">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0932-A.M.100.F.D2run0</P>
@@ -449,7 +577,11 @@
   </EVAL>
   <EVAL ID="D0933-A.M.100.F">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0933-A.M.100.F.D2run0</P>
@@ -463,7 +595,11 @@
   </EVAL>
   <EVAL ID="D0934-A.M.100.G">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0934-A.M.100.G.D2run0</P>
@@ -477,7 +613,11 @@
   </EVAL>
   <EVAL ID="D0935-A.M.100.G">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0935-A.M.100.G.D2run0</P>
@@ -491,7 +631,11 @@
   </EVAL>
   <EVAL ID="D0936-A.M.100.G">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0936-A.M.100.G.D2run0</P>
@@ -505,7 +649,11 @@
   </EVAL>
   <EVAL ID="D0937-A.M.100.G">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0937-A.M.100.G.D2run0</P>
@@ -519,7 +667,11 @@
   </EVAL>
   <EVAL ID="D0938-A.M.100.G">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0938-A.M.100.G.D2run0</P>
@@ -533,7 +685,11 @@
   </EVAL>
   <EVAL ID="D0939-A.M.100.H">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0939-A.M.100.H.D2run0</P>
@@ -547,7 +703,11 @@
   </EVAL>
   <EVAL ID="D0940-A.M.100.H">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0940-A.M.100.H.D2run0</P>
@@ -561,7 +721,11 @@
   </EVAL>
   <EVAL ID="D0941-A.M.100.H">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0941-A.M.100.H.D2run0</P>
@@ -575,7 +739,11 @@
   </EVAL>
   <EVAL ID="D0942-A.M.100.H">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0942-A.M.100.H.D2run0</P>
@@ -589,7 +757,11 @@
   </EVAL>
   <EVAL ID="D0943-A.M.100.H">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0943-A.M.100.H.D2run0</P>
@@ -603,7 +775,11 @@
   </EVAL>
   <EVAL ID="D0944-A.M.100.H">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
+<<<<<<< Updated upstream
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
+=======
+    <MODEL-ROOT>/Users/esgardner/PycharmProjects/2009</MODEL-ROOT>
+>>>>>>> Stashed changes
     <INPUT-FORMAT TYPE="SPL"></INPUT-FORMAT>
     <PEERS>
       <P ID="1">D0944-A.M.100.H.D2run0</P>
@@ -615,6 +791,7 @@
       <M ID="H">D0944-A.M.100.H.H</M>
     </MODELS>
   </EVAL>
+<<<<<<< Updated upstream
   <EVAL ID="D1001-A.M.100.A">
     <PEER-ROOT>../outputs/train_output</PEER-ROOT>
     <MODEL-ROOT>/dropbox/19-20/573/Data/models/training/2009</MODEL-ROOT>
@@ -1029,4 +1206,6 @@
     </PEERS>
     <MODELS></MODELS>
   </EVAL>
+=======
+>>>>>>> Stashed changes
 </ROUGE_EVAL>
