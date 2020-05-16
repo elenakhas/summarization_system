@@ -51,7 +51,7 @@ def make_summaries(topic_dict, args, data_store):
 
         for sentence in sorted_keys:
             # store original sentence version
-            SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence][doc_index], topic_dict[sentence][index])] = [sentence]
+            SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'], topic_dict[sentence]['index'])] = [sentence]
 
             # check if sentence is redundant with existing sentences
             if summary:
