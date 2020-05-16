@@ -55,7 +55,7 @@ def make_summaries(topic_dict, args, data_store):
 
             # check if sentence is redundant with existing sentences
             if summary:
-                redundant = check_sim_threshold(summary, sentence, topic_dict)
+                redundant = check_sim_threshold(summary, sentence, topic_dict[topic_id])
                 if redundant:
                     print("found a redundant sentence")
                     continue
@@ -115,8 +115,8 @@ def check_sim_threshold(summary, sentence, topic_dict):
 
     for s in summary:
         if calculate_similarity(s, sentence) > sim_threshold:
-            SENTENCE_VERSIONS["{}_{}".format(topic_dict[topic_id][sentence][doc_index],
-                                             topic_dict[topic_id][sentence][index])].append(sentence)
+            SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
+                                             topic_dict[sentence]['index'])].append(sentence)
             return True
 
     return False
