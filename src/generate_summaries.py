@@ -42,7 +42,7 @@ def make_summaries(topic_dict, args, data_store):
 
     summary_dict = dict()
     for topic_id in topic_dict.keys():
-        #print(topic_id)
+        print(topic_dict[topic_id])
         summary = []
         summ_length = 0
         sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
