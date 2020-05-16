@@ -111,11 +111,11 @@ def check_sim_threshold(summary, sentence, topic_dict):
 
     """
     # set similarity threshold
-    sim_threshold = 0.95
+    sim_threshold = 0.93
 
     for s in summary:
         similarity = calculate_similarity(s, sentence)
-        if similarity >= sim_threshold:
+        if similarity > sim_threshold:
             print("redundant pair {}: \n {} \n {}\n".format(similarity, s, sentence))
             SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
                                              topic_dict[sentence]['index'])].append(sentence)
