@@ -57,6 +57,7 @@ def make_summaries(topic_dict, args, data_store):
             if summary:
                 redundant = check_sim_threshold(summary, sentence, topic_dict)
                 if redundant:
+                    print("found a redundant sentence")
                     continue
 
 
