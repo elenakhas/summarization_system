@@ -39,7 +39,7 @@ def run(args):
     start = time.time()
     topic_sentences = lda_analysis(preprocessed_data, os.path.join(
         data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json.selected"),
-        overwrite=True)
+        overwrite=False)
     print("\tfinished selecting content in {}".format(time.time()-start))
     
     print("generating summaries")
