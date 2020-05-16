@@ -11,14 +11,20 @@ spacy_lm = spacy.load("en_core_web_lg")
 import re
 
 
-def strip_attribution(line, n=4):
-    attribution_pattern = re.compile('[,]([^,\'\"]*?)[.]$')
-    match = attribution_pattern.search(line)
+ATTR_PATTERN = re.compile('[,]([^,\'\"]*?)[.]$')
+PARENS_PATTERN = re.compile("[\(\[].*?[\)\]]")
+QUOTESPACE_PATTERN = re.compile('["] ([A-Za-z0-9])')
+
+
+def strip_attribution(line, n=5):
+    match = ATTR_PATTERN.search(line)
     attribution_words = ("said", "stated", "according")
     if match is not None and any(w in match.group(1) for w in attribution_words):
         if len(word_tokenize(match.group(1))) <= n:
+            # print(line)
             # print(match.group(1))
-            line = re.sub(attribution_pattern, ".", line)
+            line = ATTR_PATTERN.sub(".", line)
+            # print(line)
     return line
 
 def make_summaries(topic_dict, args, data_store):
@@ -254,11 +260,14 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
     with open(output_path, "w") as outfile:
         for line in sentences:
             line = line.replace("\\", "").replace(" ,", ", ").replace(" .", ". ").replace("_", " ").replace("  ", " ")
-            line = re.sub('["] ([A-Za-z0-9])', '"\g<1>', line)  # Replace `" The` with `"The` 
+            line = QUOTESPACE_PATTERN.sub('"\g<1>', line)  # Replace `" The` with `"The` 
             line = line.replace(', "', '," ')
             line = line.replace("``", ' "')
 
             line = strip_attribution(line)
+            
+            if not line[0].isupper():
+                line = line[0].upper() + line[1:]
             outfile.write(line + "\n")
 
 
