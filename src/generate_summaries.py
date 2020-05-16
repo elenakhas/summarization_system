@@ -14,6 +14,7 @@ import re
 ATTR_PATTERN = re.compile('[,]([^,\'\"]*?)[.]$')
 PARENS_PATTERN = re.compile("[\(\[].*?[\)\]]")
 QUOTESPACE_PATTERN = re.compile('["] ([A-Za-z0-9])')
+SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
 
 
 def strip_attribution(line, n=5):
@@ -49,6 +50,16 @@ def make_summaries(topic_dict, args, data_store):
 
 
         for sentence in sorted_keys:
+            # store original sentence version
+            SENTENCE_VERSIONS["{}_{}".format(topic_dict[topic_id][sentence][doc_index], topic_dict[topic_id][sentence][index])] = [sentence]
+
+            # check if sentence is redundant with existing sentences
+            if summary:
+                redundant = check_sim_threshold(summary, sentence, topic_dict)
+                if redundant:
+                    continue
+
+
             if summ_length >= 100:
                 break
 
@@ -73,8 +84,8 @@ def make_summaries(topic_dict, args, data_store):
 
         # do information ordering for summary
         best_summary = score_coherence(summary)
-        print("best summary is {}".format(best_summary))
-
+        #print("best summary is {}".format(best_summary))
+        print(SENTENCE_VERSIONS)
         summary_dict[topic_id] = best_summary
         # print(summary)
     # print("length of summary dict is {}".format(len(summary_dict)))
@@ -85,6 +96,29 @@ def make_summaries(topic_dict, args, data_store):
         out_dir = os.path.join(data_store["devtest_outdir"], args.deliverable)
     for topic_id, sentences in summary_dict.items():
         write_to_file(out_dir, args.run_id, topic_id, sentences)
+
+def check_sim_threshold(summary, sentence, topic_dict):
+    """
+    Checks if a sentence is redundant with sentences already in summary.
+    if yes, adds it to SENTENCE_VERSIONS
+    Args:
+        summary: the sentences in the summary so far
+        sentence: the sentence being evaluated
+        topic_dict: dict with sentence info
+
+    Returns: True if redundant
+
+    """
+    # set similarity threshold
+    sim_threshold = 0.85
+
+    for s in summary:
+        if calculate_similarity(s, sentence) > sim_threshold:
+            SENTENCE_VERSIONS["{}_{}".format(topic_dict[topic_id][sentence][doc_index],
+                                             topic_dict[topic_id][sentence][index])].append(sentence)
+            return True
+
+    return False
 
 def score_coherence(summary):
     if len(summary) == 1:
@@ -142,58 +176,6 @@ def calculate_similarity(s1, s2):
     """
     return s1.similarity(s2)
 
-# def make_summaries(topic_dict, args, data_store):
-#     """
-#     given a topic dictionary, generates summaries for each topic
-#     Args:
-#         topic_dict: dictionary of {topic_id: {sentence: {sentence info}}}
-#
-#     Returns: dictionary of summaries for each topic id. key: topic_id,
-#     value: list of summary sentences
-#
-#     """
-#
-#     summary_dict = dict()
-#     for topic_id in topic_dict.keys():
-#         #print(topic_id)
-#         summary = []
-#         summ_length = 0
-#         sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
-#         #print(sorted_keys)
-#
-#         for sentence in sorted_keys:
-#             if summ_length >= 100:
-#                 break
-#
-#             # ignore short sentences
-#             sen_length = topic_dict[topic_id][sentence]['length']
-#             if sen_length <= 8 or sen_length > 50:
-#                 continue
-#
-#             sentence = apply_heuristics_to_sentence(sentence)
-#
-#             tokens = apply_heuristics_to_tokens(word_tokenize(sentence))
-#
-#
-#             if summ_length + len(tokens) <= 100:
-#                 summ_length += len(tokens)
-#
-#                 summary.append(TreebankWordDetokenizer().detokenize(tokens))
-#             else:
-#                 continue # keep going in case we find a shorter sentence to add
-#
-#         # print("length of summary is {}".format(summ_length))
-#         summary_dict[topic_id] = summary
-#         # print(summary)
-#     # print("length of summary dict is {}".format(len(summary_dict)))
-#
-#     if args.split == "training":
-#         out_dir = data_store["training_outdir"]
-#     elif args.split == "devtest":
-#         out_dir = os.path.join(data_store["devtest_outdir"], args.deliverable)
-#     for topic_id, sentences in summary_dict.items():
-#         write_to_file(out_dir, args.run_id, topic_id, sentences)
-
 
 def apply_heuristics_to_sentence(sentence):
     #print(sentence)
@@ -210,7 +192,6 @@ def apply_heuristics_to_sentence(sentence):
     sentence = sentence.replace('At this point, ', '')
     sentence = sentence.replace(', however,', '')
     sentence = sentence.replace(', also, ', '')
-
 
     # remove ages
     sentence = re.sub(", aged \d+,", "", sentence)
@@ -229,13 +210,6 @@ def apply_heuristics_to_tokens(tokens):
     # don't get rid of adverb at end of sentence
     if len(pos_tags) - 2 in adverb_indices:
         adverb_indices.remove(len(pos_tags) - 2)
-
-
-    # for word in tokens:
-        #if word == 'so':
-           # i = tokens.index('so')
-            #print(i)
-            #adverb_indices.remove(i)
 
     for i in sorted(adverb_indices, reverse=True):
         tokens.pop(i)
