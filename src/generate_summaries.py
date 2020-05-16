@@ -111,7 +111,7 @@ def check_sim_threshold(summary, sentence, topic_dict):
 
     """
     # set similarity threshold
-    sim_threshold = 0.96
+    sim_threshold = 0.95
 
     for s in summary:
         similarity = calculate_similarity(s, sentence)
