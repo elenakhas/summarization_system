@@ -85,7 +85,7 @@ def get_corpus_topics(text, lda_model):
 
 
 
-def lda_analysis(input_data, selected_json_path, overwrite=False, num_topics = 3, num_sentences = 10):
+def lda_analysis(input_data, selected_json_path, overwrite=False, num_topics = 3, num_sentences = 20):
     if os.path.exists(selected_json_path) and not overwrite:
         with open(selected_json_path) as infile:
             return json.load(infile)
