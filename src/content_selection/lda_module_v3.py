@@ -24,7 +24,7 @@ def parseJson(json_file):
     return data
 
 
-def get_document_collection(data):
+def get_document_collection(input_data):
     '''
     this function gets the entire corpus for idf score calculation
     :param data:
