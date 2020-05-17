@@ -7,6 +7,7 @@ from scipy.spatial.distance import cosine
 import pandas as pd
 import os
 import random 
+import pickle
 
 
 def tokenize(sentence_list, model_name="bert-base-cased"):
@@ -18,21 +19,36 @@ def tokenize(sentence_list, model_name="bert-base-cased"):
     return inputs_list
 
 
-def make_embeddings(sentence_list, model_name="bert-base-cased"):
+def make_embeddings(topic_sentences, pickle_path, model_name="bert-base-cased", overwrite=False):
     """
     Given a list of sentences, return their embeddings.
     The embeddings are a mean over the last hidden layer of 
     a pretrained BERT model.
+
+    Returns: dict where keys are sentences, and values 
+    are embeddings.
     """
+    if os.path.exists(pickle_path) and not overwrite:
+        with open(pickle_path, "rb") as handle:
+            return torch.load(handle)
+    
+    sentence_list = []
+    for inner_dict in topic_sentences.values():
+        sentence_list.extend(inner_dict.keys())
+
     inputs_list = tokenize(sentence_list)
     model = BertModel.from_pretrained(model_name)
-    sentence_embeddings = []
+    sentence_embeddings = {}
     for sentence, input_ids in tqdm(zip(sentence_list, inputs_list), desc="embedding"):
         with torch.no_grad():
             outputs = model(input_ids)
             embed = torch.mean(outputs[0], dim=0)
             embed = torch.mean(embed, dim=0)
-            sentence_embeddings.append(embed)
+            sentence_embeddings[sentence] = embed
+    
+    with open(pickle_path, "wb") as handle:
+        # pickle.dump(sentence_embeddings, handle)
+        torch.save(sentence_embeddings, handle, pickle_protocol=2)
     return sentence_embeddings
 
 

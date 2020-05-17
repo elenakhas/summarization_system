@@ -9,6 +9,7 @@ from compute_similarity import remove_stopwords, add_lemmas
 import spacy
 spacy_lm = spacy.load("en_core_web_lg")
 import re
+from scipy.spatial.distance import cosine
 
 
 ATTR_PATTERN = re.compile('[,]([^,\'\"]*?)[.]$')
@@ -28,7 +29,8 @@ def strip_attribution(line, n=5):
             # print(line)
     return line
 
-def make_summaries(topic_dict, args, data_store):
+
+def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95, min_length=8, max_length=50, use_embeddings=False):
     """
     given a topic dictionary, generates summaries for each topic
     version with info ordering
@@ -44,18 +46,21 @@ def make_summaries(topic_dict, args, data_store):
     for topic_id in topic_dict.keys():
         #print(topic_dict[topic_id])
         summary = []
+        full_summary = []  # without truncated sentences
         summ_length = 0
         sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
         #print(sorted_keys)
 
 
-        for sentence in sorted_keys:
+        for orig_sentence in sorted_keys:
+            sentence = orig_sentence
             # store original sentence version
             SENTENCE_VERSIONS["{}_{}".format(topic_dict[topic_id][sentence]['doc_index'], topic_dict[topic_id][sentence]['index'])] = [sentence]
 
             # check if sentence is redundant with existing sentences
             if summary:
-                redundant = check_sim_threshold(summary, sentence, topic_dict[topic_id])
+                redundant = check_sim_threshold(summary, full_summary, sentence, topic_dict[topic_id], 
+                    embeddings, sim_threshold=sim_threshold, use_embeddings=use_embeddings)
                 if redundant:
 
                     continue
@@ -66,7 +71,7 @@ def make_summaries(topic_dict, args, data_store):
 
             # ignore short sentences
             sen_length = topic_dict[topic_id][sentence]['length']
-            if sen_length <= 8 or sen_length > 50:
+            if sen_length <= min_length or sen_length > max_length:
                 continue
 
             sentence = apply_heuristics_to_sentence(sentence)
@@ -78,6 +83,7 @@ def make_summaries(topic_dict, args, data_store):
                 summ_length += len(tokens)
 
                 summary.append(TreebankWordDetokenizer().detokenize(tokens))
+                full_summary.append(orig_sentence)
             else:
                 continue # keep going in case we find a shorter sentence to add
 
@@ -98,7 +104,8 @@ def make_summaries(topic_dict, args, data_store):
     for topic_id, sentences in summary_dict.items():
         write_to_file(out_dir, args.run_id, topic_id, sentences)
 
-def check_sim_threshold(summary, sentence, topic_dict):
+
+def check_sim_threshold(summary, full_summary, sentence, topic_dict, embeddings, sim_threshold=0.95, use_embeddings=False):
     """
     Checks if a sentence is redundant with sentences already in summary.
     if yes, adds it to SENTENCE_VERSIONS
@@ -110,11 +117,15 @@ def check_sim_threshold(summary, sentence, topic_dict):
     Returns: True if redundant
 
     """
-    # set similarity threshold
-    sim_threshold = 0.95
 
-    for s in summary:
-        similarity = calculate_similarity(s, sentence)
+    # TODO: use c_dist to store pairwise similarities across all 
+    # sentences in the summary instead of generating them on the fly 
+
+    for s, orig_s in zip(summary, full_summary):
+        if use_embeddings:
+            similarity = 1 - cosine(embeddings[orig_s], embeddings[sentence])
+        else:
+            similarity = calculate_similarity(s, sentence)
         if similarity > sim_threshold:
             print("redundant pair {}: \n {} \n {}\n".format(similarity, s, sentence))
             SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
@@ -123,12 +134,12 @@ def check_sim_threshold(summary, sentence, topic_dict):
 
     return False
 
+
 def score_coherence(summary):
     if len(summary) == 1:
         return summary
 
     perms = permutations(summary, len(summary))
-   # spacy_lm = spacy.load("en_core_web_lg")  #TODO we do not want to be loading this here - way too slow
     candidate_dict = dict()
 
     # go through all the permutations of sentence orderings
@@ -204,6 +215,7 @@ def apply_heuristics_to_sentence(sentence):
     sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
     # (, [a-z]+[ing][\sa-zA-Z\d]+,| ^[A-Za-z]+[ing][\sa-zA-Z\d]+,)
     return sentence.strip()
+
 
 def apply_heuristics_to_tokens(tokens):
     # get rid of adverbs
