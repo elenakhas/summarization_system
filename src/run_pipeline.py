@@ -55,7 +55,7 @@ def run(args):
             data_store["working_dir"], 
             os.path.basename(xml_filename)[:-4] + ".json.selected"),
         num_sentences=args.num_sentences,
-        overwrite=True,
+        overwrite=False,
     )
 
     bert_embeddings = run_module(
@@ -65,7 +65,7 @@ def run(args):
         pickle_path=os.path.join(data_store["working_dir"], 
             "{}_{}_{}.pickle".format(args.model_name, args.deliverable, args.split)),
         model_name=args.model_name,
-        overwrite=True,
+        overwrite=False,
     )
 
     run_module(
