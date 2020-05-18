@@ -54,7 +54,7 @@ def run(args):
         preprocessed_data,
         os.path.join(
             data_store["working_dir"], 
-            os.path.basename(xml_filename)[:-4] + ".json.selected"),
+            "selected.json"),
         num_sentences=args.num_sentences,
         overwrite=False,
     )
@@ -75,6 +75,7 @@ def run(args):
         topic_sentences, bert_embeddings, args, data_store,
         use_embeddings=args.use_embeddings,
         sim_threshold=args.sim_threshold,
+        num_sentences=args.num_sentences,
     )
 
     run_module(

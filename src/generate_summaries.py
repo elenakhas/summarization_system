@@ -7,6 +7,7 @@ from itertools import permutations
 from compute_similarity import remove_stopwords, add_lemmas
 import re
 from scipy.spatial.distance import cosine
+from tqdm import tqdm
 
 
 CAPS_PATTERN = re.compile("([A-Z]{2,}(?:\s[A-Z-'0-9]{2,})*)")  # matches one or more consecutive capitalized words
@@ -26,7 +27,7 @@ def strip_attribution(line, n=5):
     return line
 
 
-def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95, min_length=8, max_length=50, use_embeddings=False):
+def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95, min_length=8, max_length=50, num_sentences=20, use_embeddings=False):
     """
     given a topic dictionary, generates summaries for each topic
     version with info ordering
@@ -45,7 +46,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         summ_length = 0
         sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
 
-        for orig_sentence in sorted_keys:
+        for orig_sentence in sorted_keys[:num_sentences]:
             sentence = orig_sentence
 
             # ignore sentences containing capitalized words 
@@ -150,7 +151,7 @@ def score_coherence(summary, full_summary, embeddings):
     candidate_dict = dict()
     # go through all the permutations of sentence orderings
     ord_count = 1
-    for p in perms:
+    for p in tqdm(perms, desc="ordering"):
 
         for i in range(1, len(p)):
             cos_score = 1 - cosine(embeddings[full_summary[i-1]], embeddings[full_summary[i]])
