@@ -100,7 +100,7 @@ def process_acquaint2(path, doc_id):
 def process_evaltest(path, doc_id):
     print("processing {} in process_evaltest".format(path))
     myfile = gzip.open(path, 'rb')
-    myfile_data = myfile.read().decode().replace("\n",' ').strip()
+    myfile_data = myfile.read().decode().replace("\n", ' ').strip()
     document_string = ""
     doc_soup = BeautifulSoup(myfile_data, 'lxml')
 
@@ -120,6 +120,7 @@ def process_evaltest(path, doc_id):
         document_string += line.contents[0].strip() + " "
 
     return document_string
+
 
 def read_data(xml_filename, split, data_store, test=False, overwrite=False):
     """
@@ -224,4 +225,4 @@ if __name__ == "__main__":
     if not os.path.exists(data_store["working_dir"]):
         os.makedirs(data_store["working_dir"])
 
-    input_data = load_data("input_data", data_store, split, year=2011)
+    input_data = load_data("input_data", data_store, split)
