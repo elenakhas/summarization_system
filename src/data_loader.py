@@ -17,7 +17,7 @@ def get_path_from_docid(doc_id, split, data_store):
         path = corpus_dir + publication + "/" + publication + "_" + date[:-2] + ".xml"
         return path
     elif "_" in doc_id and split == 'evaltest':
-        corpus_dir = data_store["evaltest"]
+        corpus_dir = data_store["evaltest-data"]
         publication = (doc_id.split("_")[0] + "_" + doc_id.split("_")[1]).lower()
         date = doc_id.split("_")[2].split(".")[0]
         publication_doc = doc_id.split("_")[2].split(".")[1]
