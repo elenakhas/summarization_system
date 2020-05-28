@@ -6,7 +6,7 @@ import time
 
 from data_loader import load_data
 from content_selection.preprocessing import preprocess 
-from content_selection.lda import lda_analysis
+from content_selection.lda_new import lda_analysis
 from generate_eval_config import write_eval_config
 from generate_summaries import make_summaries
 from get_embeddings import make_embeddings
@@ -47,6 +47,7 @@ def run(args):
         os.path.join(data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json.preprocessed"),
         overwrite=False)
 
+
     topic_sentences = run_module(
         "selecting content",
         lda_analysis,
@@ -55,7 +56,7 @@ def run(args):
             data_store["working_dir"], 
             os.path.basename(xml_filename)[:-4] + ".json.selected"),
         num_sentences=args.num_sentences,
-        overwrite=False,
+        overwrite=True,
     )
 
     bert_embeddings = run_module(
@@ -65,7 +66,7 @@ def run(args):
         pickle_path=os.path.join(data_store["working_dir"], 
             "{}_{}_{}.pickle".format(args.model_name, args.deliverable, args.split)),
         model_name=args.model_name,
-        overwrite=False,
+        overwrite=True,
     )
 
     run_module(
