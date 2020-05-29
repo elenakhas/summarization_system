@@ -6,6 +6,7 @@
     "human_summaries":      "/dropbox/19-20/573/Data/models/",
     "baseline_summaries":   "/dropbox/19-20/573/Data/peers/",
     "working_dir":          "working_files",
-    "devtest_outdir":       "../outputs/",
+    "evaltest_outdir":       "../outputs/D4_evaltest",
+    "devtest_outdir":       "../outputs/D4_devtest",
     "training_outdir":      "../outputs/train_output/"
 }

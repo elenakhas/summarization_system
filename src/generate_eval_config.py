@@ -78,8 +78,8 @@ def write_eval_config(args, data_store, overwrite=True):
         #model_path = "/Users/esgardner/PycharmProjects/" + args.year # for running locally
         model_path = os.path.join(data_store["human_summaries"], args.split, "2009")
         model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
-    elif args.split == 'devtest':
-        outputs_path = os.path.join(data_store["devtest_outdir"], args.deliverable)
+    elif args.split == 'devtest' or args.split == "evaltest":
+        outputs_path = os.path.join(data_store["{}_outdir".format(args.split)])
         if outputs_path.endswith("/"):
             outputs_path = outputs_path[:-1]
         output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
