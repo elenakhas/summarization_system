@@ -97,10 +97,9 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         # print(summary)
     # print("length of summary dict is {}".format(len(summary_dict)))
 
-    if args.split == "training":
-        out_dir = data_store["training_outdir"]
-    elif args.split == "devtest":
-        out_dir = os.path.join(data_store["devtest_outdir"], args.deliverable)
+    out_dir = data_store["{}_outdir"]
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
     for topic_id, sentences in summary_dict.items():
         write_to_file(out_dir, args.run_id, topic_id, sentences)
 
