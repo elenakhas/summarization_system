@@ -70,6 +70,7 @@ def write_eval_config(args, data_store, overwrite=True):
     # print("args.split: {}".format(args.split))
 
     outf = "rouge_run_{}_{}.xml".format(args.deliverable, args.split)
+
     if args.split == 'training':
         outputs_path = data_store["training_outdir"]
         if outputs_path.endswith("/"):
@@ -78,13 +79,14 @@ def write_eval_config(args, data_store, overwrite=True):
         #model_path = "/Users/esgardner/PycharmProjects/" + args.year # for running locally
         model_path = os.path.join(data_store["human_summaries"], args.split, "2009")
         model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
-    elif args.split == 'devtest':
-        outputs_path = os.path.join(data_store["devtest_outdir"], args.deliverable)
+    else:
+        outputs_path = os.path.join(data_store["{}_outdir".format(args.split)])
         if outputs_path.endswith("/"):
             outputs_path = outputs_path[:-1]
         output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
         model_path = os.path.join(data_store["human_summaries"], args.split)
         model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
+
     build_tree(outf, sorted(output_files), outputs_path, sorted(model_files), model_path)
 
 

@@ -1,13 +1,45 @@
-Requirement already satisfied: en_core_web_sm==2.1.0 from https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.1.0/en_core_web_sm-2.1.0.tar.gz#egg=en_core_web_sm==2.1.0 in /home2/schan2/anaconda3/envs/573/lib/python3.7/site-packages (2.1.0)
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: en_core_web_lg==2.1.0 from https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.1.0/en_core_web_lg-2.1.0.tar.gz#egg=en_core_web_lg==2.1.0 in /home2/schan2/anaconda3/envs/573/lib/python3.7/site-packages (2.1.0)
 [38;5;2m[+] Download and installation successful[0m
-You can now load the model via spacy.load('en_core_web_sm')
+You can now load the model via spacy.load('en_core_web_lg')
+running with args: Namespace(config='config.json', deliverable='D3', model_name='bert-base-cased-finetuned-mrpc', num_sentences=20, run_id='D3test', sim_threshold=0.97, split='devtest', test=False, use_embeddings=True)
 loading input data
-	finished loading input data in 0.006239652633666992
+	 finished loading input data in 0.004982948303222656
 loading preprocessed data
-	finished preprocessing data in 36.201162815093994
+	 finished loading preprocessed data in 0.12066221237182617
 selecting content
-	finished selecting content in 80.81720924377441
-generating summaries
-	finished generating summaries in 0.5805623531341553
+	 finished selecting content in 26.974817276000977
+getting sentence embeddings
+	 finished getting sentence embeddings in 179.24896574020386
+generating sentences
+redundant pair 0.9709418416023254: 
+ In a notice issued through the Macao Daily News Thursday, the health department said that residents should avoid contacting birds in case they might be infected with the deadly virus of bird flu known as H5N1. 
+ The Department of Health prepared a fact sheet to explain to tourists the avian flu, which is caused by a virus H5N1 that is only found in poultry.
+
+redundant pair 0.9711117744445801: 
+ On Monday, Hariri and eight other people were killed in a huge explosion, which occurred as Hariri's motorcade was passing by in the seafront area of the Lebanese capital Beirut. 
+ The explosion, apparently caused by a car bomb, occurred around  1:00 p.m. (1100 GMT), when Hariri's motorcade of four black  limousines escorted by jeeps was passing by in the seafront area of the capital.
+
+redundant pair 0.9751244783401489: 
+ On Monday, Hariri and eight other people were killed in a huge explosion, which occurred as Hariri's motorcade was passing by in the seafront area of the Lebanese capital Beirut. 
+ Hariri, at least five bodyguards and four other people were killed in a massive bombing that blasted his motorcade on a Beirut seafront street earlier Monday.
+
+redundant pair 0.9710759520530701: 
+ Officials failed to provide information on casualties among the tribesmen in Thursday's clashes, but denied tribal elders' claims that dozens of civilians had died. 
+ He said eight soldiers were killed and 23 injured but gave no details on any casualties among the attackers or other tribespeople.
+
+redundant pair 0.9708234071731567: 
+ - On November 7 , 2003, England conspired with Garner and three other soldiers to maltreat a number of prisoners who were subject to their orders and posed in a photograph beside a pyramid of naked prisoners. 
+ On November 7, 2003, she posed for a photograph with detainees  who were forced to form a human pyramid while naked.
+
+redundant pair 0.9774191975593567: 
+ Those officers told associates that they grew suspicious two of them got out of their car to question him and he retreated into the vestibule of the building, the people knowledgeable about the case said on Tuesday. 
+ But several officers told associates that after the officers identified themselves and asked to talk to Diallo, he retreated into the building's vestibule and appeared to be trying to reach the inner door, the people with knowledge of the case said.
+
+redundant pair 0.9705276489257812: 
+ Pfizer Inc. warned doctors on Friday that one of its bestselling painkillers, Bextra, might increase the risk of a heart attack or stroke in coronary artery bypass surgery patients. 
+ Pfizer said it is already conducting research into whether Bextra increases the risk of heart attacks in people taking the drug for chronic pain.
+
+	 finished generating sentences in 539.3349704742432
 writing eval config
-	finished writing eval config in 0.05440187454223633
+	 finished writing eval config in 0.04961729049682617

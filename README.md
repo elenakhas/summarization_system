@@ -32,12 +32,7 @@ The outputs of the following modules are cached under `src/working_files`:
 * Preprocessing
 * LDA
 
-If your changes to a module change the output, you need to set `overwrite=True` for that module in `src/run_pipeline.py`. For example, to recreate output from the preprocessing step:
-```python
-preprocessed_data = preprocess(input_data, os.path.join(
-        data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json.preprocessed"),
-        overwrite=True)
-```
+If your changes to a module change the output, you need to set `overwrite=True` for that module in `src/run_pipeline.py`. 
 
 
 # Contributors

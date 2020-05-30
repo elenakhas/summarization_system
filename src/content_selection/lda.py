@@ -7,7 +7,7 @@ from gensim.utils import simple_preprocess
 from gensim.models import LdaModel, LdaMulticore
 
 
-def lda_analysis(input_data, selected_json_path, overwrite=False):
+def lda_analysis(input_data, selected_json_path, num_sentences=20, overwrite=False):
     if os.path.exists(selected_json_path) and not overwrite:
         with open(selected_json_path) as infile:
             return json.load(infile)
@@ -72,7 +72,7 @@ def lda_analysis(input_data, selected_json_path, overwrite=False):
 #             # IF YOU WANT ALL ONLY TOP N - USE THIS TILL THE END AND RETURN picked_sentences           
             sen_ranker.append((sen_score, k))
 
-        sorted_sentences = sorted(sen_ranker, key = lambda x : x[0], reverse = True)[0:10]
+        sorted_sentences = sorted(sen_ranker, key = lambda x : x[0], reverse = True)[0:num_sentences]
 
         for _sen in sorted_sentences:
             sent = _sen[1]
@@ -100,4 +100,3 @@ if __name__ == "__main__":
     parser.add_argument("--test", default=False)
     args = parser.parse_args()
     run(args)
-    

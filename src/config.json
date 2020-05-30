@@ -1,10 +1,12 @@
 {
     "acquaint":             "/corpora/LDC/LDC02T31/",
     "acquaint-2":           "/corpora/LDC/LDC08T25/data/",
+    "evaltest-data":        "/corpora/LDC/LDC11T07/data/",
     "input_data":           "/dropbox/19-20/573/Data/Documents/", 
     "human_summaries":      "/dropbox/19-20/573/Data/models/",
     "baseline_summaries":   "/dropbox/19-20/573/Data/peers/",
     "working_dir":          "working_files",
-    "devtest_outdir":       "../outputs/",
+    "evaltest_outdir":       "../outputs/D4_evaltest",
+    "devtest_outdir":       "../outputs/D4_devtest",
     "training_outdir":      "../outputs/train_output/"
 }
