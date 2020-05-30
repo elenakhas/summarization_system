@@ -329,7 +329,8 @@ def apply_heuristics_to_tokens(tokens):
     remove_indices = list()
     last_index = len(pos_tags)-1
     for i, pos in enumerate(pos_tags):
-        if pos == "RB" and tokens[i].lower() != "when":
+        tok = tokens[i].lower()
+        if pos == "RB" and  tok not in ("when", "not", "n't", "about", "again"):
             if i < last_index and pos_tags[i+1] == "IN":
                 continue
             remove_indices.append(i)
@@ -341,7 +342,7 @@ def apply_heuristics_to_tokens(tokens):
 
     
     # don't get rid of adverb at end of sentence
-    if len(pos_tags) - 2 in remove_indices:
+    if len(pos_tags) - 2 in remove_indices and pos_tags[len(pos_tags)-2] == "RB":
         remove_indices.remove(len(pos_tags) - 2)
 
     for i in sorted(remove_indices, reverse=True):
