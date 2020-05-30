@@ -1,6 +1,6 @@
 import os
 
-dirname = "/home2/schan2/573/summarization_system/outputs/D3"
+dirname = "/home2/schan2/573/summarization_system/outputs/D4_devtest"
 
 # wc -w is used during grading
 

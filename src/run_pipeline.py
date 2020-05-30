@@ -56,7 +56,7 @@ def run(args):
             data_store["working_dir"], 
             os.path.basename(xml_filename)[:-4] + ".json.selected"),
         num_sentences=args.num_sentences,
-        overwrite=True,
+        overwrite=False,
     )
 
     bert_embeddings = run_module(
@@ -66,7 +66,7 @@ def run(args):
         pickle_path=os.path.join(data_store["working_dir"], 
             "{}_{}_{}.pickle".format(args.model_name, args.deliverable, args.split)),
         model_name=args.model_name,
-        overwrite=True,
+        overwrite=False,
     )
 
     run_module(
@@ -87,7 +87,7 @@ def run(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="config.json")
-    parser.add_argument("--deliverable", type=str, default="D3", help='deliverable number')
+    parser.add_argument("--deliverable", type=str, default="D4", help='deliverable number')
     parser.add_argument("--split", type=str, default="training", choices=["devtest", "evaltest", "training"])
     parser.add_argument("--run_id", default=None)
     parser.add_argument("--test", action="store_true")

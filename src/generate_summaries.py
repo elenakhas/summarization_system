@@ -7,11 +7,12 @@ from nltk import pos_tag
 from itertools import permutations
 from compute_similarity import remove_stopwords, add_lemmas
 import spacy
-spacy_lm = spacy.load("en_core_web_lg")
+# spacy_lm = spacy.load("en_core_web_lg")
 import re
 from scipy.spatial.distance import cosine
 
 
+CAPS_PATTERN = re.compile(r"([A-Z]{2,}(?:\s[A-Z-'0-9]{2,})*)")  # matches one or more consecutive capitalized words
 ATTR_PATTERN = re.compile('[,]([^,\'\"]*?)[.]$')
 PARENS_PATTERN = re.compile("[\(\[].*?[\)\]]")
 QUOTESPACE_PATTERN = re.compile('["] ([A-Za-z0-9])')
@@ -20,7 +21,7 @@ SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
 
 def strip_attribution(line, n=5):
     match = ATTR_PATTERN.search(line)
-    attribution_words = ("said", "stated", "according")
+    attribution_words = ("said", "say", "report", "state", "according")
     if match is not None and any(w in match.group(1) for w in attribution_words):
         if len(word_tokenize(match.group(1))) <= n:
             # print(line)
@@ -54,15 +55,31 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
 
         for orig_sentence in sorted_keys:
             sentence = orig_sentence
+
+            # ignore sentences containing capitalized words 
+            match = CAPS_PATTERN.match(sentence)
+            if match is not None:
+                continue
+             
+            if "/" in sentence:
+                continue
+
+            if '"' in sentence:
+                continue
+
             # store original sentence version
-            SENTENCE_VERSIONS["{}_{}".format(topic_dict[topic_id][sentence]['doc_index'], topic_dict[topic_id][sentence]['index'])] = [sentence]
+            sentence_id = "{doc_index}_{index}".format(
+                doc_index=topic_dict[topic_id][sentence]['doc_index'],
+                index=topic_dict[topic_id][sentence]['index'],
+            )
+            SENTENCE_VERSIONS[sentence_id] = [sentence]
 
             # check if sentence is redundant with existing sentences
             if summary:
                 redundant = check_sim_threshold(summary, full_summary, sentence, topic_dict[topic_id], 
                     embeddings, sim_threshold=sim_threshold, use_embeddings=use_embeddings)
                 if redundant:
-
+                    # TODO: choose the longest sentence version
                     continue
 
 
@@ -75,6 +92,15 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                 continue
 
             sentence = apply_heuristics_to_sentence(sentence)
+            
+            # Make sure that the sentence starts with an alphanumeric character
+            start_index = 0
+            for c in sentence:
+                if c.isalnum():
+                    break
+                else:
+                    start_index += 1
+            sentence = sentence[start_index:]
 
             tokens = apply_heuristics_to_tokens(word_tokenize(sentence))
 
@@ -90,14 +116,14 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         # print("length of summary is {}".format(summ_length))
 
         # do information ordering for summary
-        best_summary = score_coherence(summary)
+        best_summary = score_coherence(summary, full_summary, embeddings=embeddings)
         #print("best summary is {}".format(best_summary))
         #print(SENTENCE_VERSIONS)
         summary_dict[topic_id] = best_summary
         # print(summary)
     # print("length of summary dict is {}".format(len(summary_dict)))
 
-    out_dir = data_store["{}_outdir"]
+    out_dir = data_store["{}_outdir".format(args.split)]
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     for topic_id, sentences in summary_dict.items():
@@ -124,7 +150,8 @@ def check_sim_threshold(summary, full_summary, sentence, topic_dict, embeddings,
         if use_embeddings:
             similarity = 1 - cosine(embeddings[orig_s], embeddings[sentence])
         else:
-            similarity = calculate_similarity(s, sentence)
+            raise Exception("Add --use_embeddings flag")
+            # similarity = calculate_similarity(s, sentence)
         if similarity > sim_threshold:
             print("redundant pair {}: \n {} \n {}\n".format(similarity, s, sentence))
             SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
@@ -134,11 +161,11 @@ def check_sim_threshold(summary, full_summary, sentence, topic_dict, embeddings,
     return False
 
 
-def score_coherence(summary):
+def score_coherence(summary, full_summary, embeddings):
     if len(summary) == 1:
         return summary
 
-    perms = permutations(summary, len(summary))
+    perms = permutations(range(len(summary)), len(summary))
     candidate_dict = dict()
 
     # go through all the permutations of sentence orderings
@@ -148,8 +175,8 @@ def score_coherence(summary):
         for i in range(1, len(p)):
             #print(p[i-1], p[i])
 
-            cos_score = calculate_similarity(p[i - 1], p[i])
-
+            # cos_score = calculate_similarity(p[i - 1], p[i])
+            cos_score = 1 - cosine(embeddings[full_summary[i-1]], embeddings[full_summary[i]])
 
 
             #print(s1_processed.similarity(s2_processed))
@@ -169,26 +196,27 @@ def score_coherence(summary):
     for option in candidate_dict.keys():
         candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
 
-    return max(candidate_dict.items(), key=operator.itemgetter(1))[0]
+    best_ordering = max(candidate_dict.items(), key=operator.itemgetter(1))[0]
+    return [summary[i] for i in best_ordering]
 
 
-def calculate_similarity(s1, s2):
-    """
-    calculates similarity score for a sentence pair
-    Args:
-        s1: first sentence
-        s2: second sentence
+# def calculate_similarity(s1, s2):
+#     """
+#     calculates similarity score for a sentence pair
+#     Args:
+#         s1: first sentence
+#         s2: second sentence
 
-    Returns: cosine similarity score
+#     Returns: cosine similarity score
 
-    """
-    s1 = spacy_lm(s1.lower())
-    s2 = spacy_lm(s2.lower())
-    s1_no_stop = remove_stopwords(s1, spacy_lm)
-    s2_no_stop = remove_stopwords(s2, spacy_lm)
-    s1_processed = add_lemmas(s1_no_stop, spacy_lm)
-    s2_processed = add_lemmas(s2_no_stop, spacy_lm)
-    return s1.similarity(s2)
+#     """
+#     s1 = spacy_lm(s1.lower())
+#     s2 = spacy_lm(s2.lower())
+#     s1_no_stop = remove_stopwords(s1, spacy_lm)
+#     s2_no_stop = remove_stopwords(s2, spacy_lm)
+#     s1_processed = add_lemmas(s1_no_stop, spacy_lm)
+#     s2_processed = add_lemmas(s2_no_stop, spacy_lm)
+#     return s1.similarity(s2)
 
 
 def apply_heuristics_to_sentence(sentence):
@@ -213,6 +241,7 @@ def apply_heuristics_to_sentence(sentence):
     # remove gerunds
     sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
     # (, [a-z]+[ing][\sa-zA-Z\d]+,| ^[A-Za-z]+[ing][\sa-zA-Z\d]+,)
+
     return sentence.strip()
 
 
@@ -228,6 +257,10 @@ def apply_heuristics_to_tokens(tokens):
 
     for i in sorted(adverb_indices, reverse=True):
         tokens.pop(i)
+
+    # make sure the first token is alphanumeric
+    if not tokens[0].isalnum() and tokens[0] != '"':
+        tokens = tokens[1:]
 
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()

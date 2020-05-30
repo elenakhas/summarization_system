@@ -11,14 +11,14 @@ python3 -m spacy download en_core_web_lg
 # --use_embeddings --sim_threshold 0.97 --num_sentences 20
 
 # Run the pipeline on devtest data
-python3 run_pipeline.py --split "devtest" --run_id "D3test"  \
+python3 run_pipeline.py --deliverable "D4" --split "devtest" --run_id "D4test"  \
 --model_name "bert-base-cased-finetuned-mrpc" \
---use_embeddings --sim_threshold 0.97 --num_sentences 20
+--use_embeddings --sim_threshold 0.94 --num_sentences 20
 
 # Run the pipeline on evaltest data
-python3 run_pipeline.py --split "evaltest" --run_id "D3eval"  \
+python3 run_pipeline.py --deliverable "D4" --split "evaltest" --run_id "D4eval"  \
 --model_name "bert-base-cased-finetuned-mrpc" \
---use_embeddings --sim_threshold 0.97 --num_sentences 20
+--use_embeddings --sim_threshold 0.94 --num_sentences 20
 
 # Evaluate devtest summaries
 perl /dropbox/19-20/573/code/ROUGE/ROUGE-1.5.5.pl -e /dropbox/19-20/573/code/ROUGE/data \
