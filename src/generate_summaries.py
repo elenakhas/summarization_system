@@ -56,7 +56,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             if "/" in sentence:
                 continue
 
-            if '"' in sentence:
+            if '"' in sentence or "''" in sentence:
                 continue
 
             # store original sentence version
