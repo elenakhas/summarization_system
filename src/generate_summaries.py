@@ -88,12 +88,16 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                 if redundant:
                     # TODO: choose the longest sentence version
                     if to_replace:
+                        print("pre removal: {}".format(summary))
+                        print("current sentence: {}".format(sentence))
                         print("removing, to replace: {}".format(to_replace))
                         summary.remove(to_replace[0])
                         full_summary.remove(to_replace[1])
                         summ_length - len(nltk.word_tokenize(to_replace[0]))
                     else:
                         continue
+
+
 
 
             sentence = apply_heuristics_to_sentence(sentence)
