@@ -75,6 +75,7 @@ def run(args):
         topic_sentences, bert_embeddings, args, data_store,
         use_embeddings=args.use_embeddings,
         sim_threshold=args.sim_threshold,
+        num_sentences=args.num_sentences,
     )
 
     run_module(
