@@ -4,9 +4,9 @@ import os
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 import nltk
 from itertools import permutations
-from compute_similarity import remove_stopwords, add_lemmas
 import re
 from scipy.spatial.distance import cosine
+import json
 
 
 CAPS_PATTERN = re.compile("([A-Z]{2,}(?:\s[A-Z-'0-9]{2,})*)")  # matches one or more consecutive capitalized words
@@ -113,136 +113,6 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         os.makedirs(out_dir)
     for topic_id, sentences in summary_dict.items():
         write_to_file(out_dir, args.run_id, topic_id, sentences)
-
-def check_sim_threshold(summary, sentence, topic_dict):
-    """
-    Checks if a sentence is redundant with sentences already in summary.
-    if yes, adds it to SENTENCE_VERSIONS
-    Args:
-        summary: the sentences in the summary so far
-        sentence: the sentence being evaluated
-        topic_dict: dict with sentence info
-
-    Returns: True if redundant
-
-    """
-    # set similarity threshold
-    sim_threshold = 0.95
-
-    for s in summary:
-        similarity = calculate_similarity(s, sentence)
-        if similarity > sim_threshold:
-            print("redundant pair {}: \n {} \n {}\n".format(similarity, s, sentence))
-            SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
-                                             topic_dict[sentence]['index'])].append(sentence)
-            return True
-
-    return False
-
-def score_coherence(summary):
-    if len(summary) == 1:
-        return summary
-
-    perms = permutations(summary, len(summary))
-   # spacy_lm = spacy.load("en_core_web_lg")  #TODO we do not want to be loading this here - way too slow
-    candidate_dict = dict()
-
-    # go through all the permutations of sentence orderings
-    ord_count = 1
-    for p in perms:
-
-        for i in range(1, len(p)):
-            #print(p[i-1], p[i])
-
-            cos_score = calculate_similarity(p[i - 1], p[i])
-
-
-
-            #print(s1_processed.similarity(s2_processed))
-            #cos_score = calculate_similarity(s1_processed, s2_processed)
-
-            try:
-                candidate_dict[p] += cos_score
-            except KeyError:
-                candidate_dict[p] = cos_score
-
-            #print(candidate_dict)
-
-        ord_count += 1
-
-    #print(candidate_dict)
-    # divide by n-1
-    for option in candidate_dict.keys():
-        candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
-
-    return max(candidate_dict.items(), key=operator.itemgetter(1))[0]
-
-
-def calculate_similarity(s1, s2):
-    """
-    calculates similarity score for a sentence pair
-    Args:
-        s1: first sentence
-        s2: second sentence
-
-    Returns: cosine similarity score
-
-    """
-    s1 = spacy_lm(s1.lower())
-    s2 = spacy_lm(s2.lower())
-    s1_no_stop = remove_stopwords(s1, spacy_lm)
-    s2_no_stop = remove_stopwords(s2, spacy_lm)
-    s1_processed = add_lemmas(s1_no_stop, spacy_lm)
-    s2_processed = add_lemmas(s2_no_stop, spacy_lm)
-    return s1.similarity(s2)
-
-
-def apply_heuristics_to_sentence(sentence):
-    #print(sentence)
-    #sentence = sentence.replace('or so', '')
-    # remove parenthetical expressions () []
-    sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
-
-    # remove expressions between -- --
-    regexp = re.compile(r"([\-])\1.*\1\1")
-    sentence = re.sub(regexp, " ", sentence)
-
-    # remove unnecessary phrases
-    sentence = sentence.replace('As a matter of fact, ', '')
-    sentence = sentence.replace('At this point, ', '')
-    sentence = sentence.replace(', however,', '')
-    sentence = sentence.replace(', also, ', '')
-
-    # remove ages
-    sentence = re.sub(", aged \d+,", "", sentence)
-
-    # remove gerunds
-    sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
-    # (, [a-z]+[ing][\sa-zA-Z\d]+,| ^[A-Za-z]+[ing][\sa-zA-Z\d]+,)
-    return sentence.strip()
-
-def apply_heuristics_to_tokens(tokens):
-    # get rid of adverbs
-    pos_tags = [el[1] for el in pos_tag(tokens)]
-
-    adverb_indices = [i for i in range(len(pos_tags)) if 'RB' in pos_tags[i]]
-
-    # don't get rid of adverb at end of sentence
-    if len(pos_tags) - 2 in adverb_indices:
-        adverb_indices.remove(len(pos_tags) - 2)
-
-    for i in sorted(adverb_indices, reverse=True):
-        tokens.pop(i)
-
-    # make sure the first letter of the sentence is capitalized
-    tokens[0] = tokens[0].capitalize()
-
-    # add period at end of sentence if no final punctuation
-    print(tokens[-1])
-    if tokens[-1] not in {'?', '.', '!'}:
-        tokens.append('.')
-
-    return tokens
 
 
 def check_sim_threshold(summary, full_summary, sentence, topic_dict, embeddings, sim_threshold=0.95, use_embeddings=False):
@@ -359,6 +229,9 @@ def apply_heuristics_to_tokens(tokens):
 
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
+    print(tokens[-1])
+    if tokens[-1] not in {'?', '.', '!'}:
+        tokens.append('.')
 
     return tokens
 
@@ -397,6 +270,6 @@ if __name__ == "__main__":
     with open(args.candidates) as infile:
         topic_dictionary = json.load(infile)
 
-    summaries_dict = make_summaries(topic_dictionary)
+    make_summaries(topic_dictionary)
 
 
