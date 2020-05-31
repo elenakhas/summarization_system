@@ -5,7 +5,7 @@ A group project for NLP Systems and Applications @ UW
 
 To run the summarization system on **condor**:
 ```
-condor_submit D3.cmd
+condor_submit D4.cmd
 ```
 
 
