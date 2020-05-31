@@ -239,6 +239,7 @@ def apply_heuristics_to_tokens(tokens):
 
     # add period at end of sentence if no final punctuation
     if tokens[-1] not in {'?', '.', '!'}:
+        print('appending')
         tokens.append('.')
 
     return tokens
