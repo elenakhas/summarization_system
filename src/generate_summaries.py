@@ -54,6 +54,15 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         for orig_sentence in sorted_keys[:num_sentences]:
             sentence = orig_sentence
 
+            if summ_length >= 100:
+                break
+
+            # ignore short sentences
+            sen_length = topic_dict[topic_id][sentence]['length']
+
+            if sen_length <= min_length or sen_length > max_length:
+                continue
+
             # ignore sentences containing capitalized words 
             match = CAPS_PATTERN.search(sentence)
             if match is not None:
@@ -86,15 +95,6 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                     else:
                         continue
 
-
-            if summ_length >= 100:
-                break
-
-            # ignore short sentences
-            sen_length = topic_dict[topic_id][sentence]['length']
-
-            if sen_length <= min_length or sen_length > max_length:
-                continue
 
             sentence = apply_heuristics_to_sentence(sentence)
             
