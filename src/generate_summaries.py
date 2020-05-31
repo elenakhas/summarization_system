@@ -93,7 +93,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                         print("removing, to replace: {}".format(to_replace))
                         summary.remove(to_replace[0])
                         full_summary.remove(to_replace[1])
-                        summ_length - len(nltk.word_tokenize(to_replace[0]))
+                        summ_length = summ_length - len(nltk.word_tokenize(to_replace[0]))
                     else:
                         continue
 
