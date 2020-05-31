@@ -79,6 +79,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                 if redundant:
                     # TODO: choose the longest sentence version
                     if to_replace:
+                        print('chose longer version')
                         summary.remove(to_replace[0])
                         full_summary.remove(to_replace[1])
                     else:
