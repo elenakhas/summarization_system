@@ -63,9 +63,6 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
 
             if '"' in sentence or "''" in sentence:
                 continue
-
-            
-            print("original:    {}".format(sentence))
             
             # store original sentence version
             sentence_id = "{doc_index}_{index}".format(
@@ -96,7 +93,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             # Make sure that the sentence starts with an alphanumeric character
             start_index = 0
             for c in sentence:
-                if c.isalnum():
+                if c.isalnum() or c == '"':
                     break
                 else:
                     start_index += 1
@@ -218,9 +215,12 @@ def apply_heuristics_to_tokens(tokens):
             remove_indices.append(i)
         
         if tokens[i].lower() in days_of_week:
-            remove_indices.append(i)
-            if i != 0 and pos_tags[i-1] == "IN":
-                remove_indices.append(i-1)
+            if i < last_index and tokens[i+1].lower() in ("morning", "night"):
+                tokens[i] = "one"
+            else:
+                remove_indices.append(i)
+                if i != 0 and pos_tags[i-1] == "IN":
+                    remove_indices.append(i-1)
 
     
     # don't get rid of adverb at end of sentence
@@ -229,11 +229,7 @@ def apply_heuristics_to_tokens(tokens):
 
     for i in sorted(remove_indices, reverse=True):
         tokens.pop(i)
-
-    # make sure the first token is alphanumeric
-    if not tokens[0].isalnum() and tokens[0] != '"':
-        tokens = tokens[1:]
-
+    
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
 

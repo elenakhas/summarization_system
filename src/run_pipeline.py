@@ -54,7 +54,7 @@ def run(args):
         preprocessed_data,
         os.path.join(
             data_store["working_dir"], 
-            "selected.json"),
+            os.path.basename(xml_filename)[:-4] + ".json.selected"),
         num_sentences=args.num_sentences,
         overwrite=False,
     )
