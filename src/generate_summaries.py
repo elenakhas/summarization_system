@@ -19,7 +19,7 @@ SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
 PRINT_REDUNDANT = False
 
 
-def strip_attribution(line, n=8):
+def strip_attribution(line, n=7):
     match = ATTR_PATTERN.search(line)
     attribution_words = ("said", "say", "report", "state", "according")
     if match is not None and "and" not in match.group(1) and any(w in match.group(1) for w in attribution_words):
@@ -82,6 +82,8 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                         print('chose longer version')
                         summary.remove(to_replace[0])
                         full_summary.remove(to_replace[1])
+
+                        print(len(summary), len(full_summary))
                     else:
                         continue
 
