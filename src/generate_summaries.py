@@ -74,11 +74,15 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
 
             # check if sentence is redundant with existing sentences
             if summary:
-                redundant = check_sim_threshold(summary, full_summary, sentence, topic_dict[topic_id], 
+                redundant, to_replace = check_sim_threshold(summary, full_summary, sentence, orig_sentence,topic_dict[topic_id],
                     embeddings, sim_threshold=sim_threshold, use_embeddings=use_embeddings)
                 if redundant:
                     # TODO: choose the longest sentence version
-                    continue
+                    if to_replace:
+                        summary.remove(to_replace[0])
+                        full_summary.remove(to_replace[1])
+                    else:
+                        continue
 
 
             if summ_length >= 100:
@@ -121,11 +125,12 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         write_to_file(out_dir, args.run_id, topic_id, sentences)
 
 
-def check_sim_threshold(summary, full_summary, sentence, topic_dict, embeddings, sim_threshold=0.95, use_embeddings=False):
+def check_sim_threshold(summary, full_summary, sentence, curr_orig_s, topic_dict, embeddings, sim_threshold=0.95, use_embeddings=False):
     """
     Checks if a sentence is redundant with sentences already in summary.
     if yes, adds it to SENTENCE_VERSIONS
     Args:
+        curr_orig_s: the original version of the sentence we're currently evaluating
         summary: the sentences in the summary so far
         sentence: the sentence being evaluated
         topic_dict: dict with sentence info
@@ -141,12 +146,19 @@ def check_sim_threshold(summary, full_summary, sentence, topic_dict, embeddings,
             # similarity = calculate_similarity(s, sentence)
         if similarity > sim_threshold:
             if PRINT_REDUNDANT:
-                print("redundant pair {}: \n {} \n {}\n".format(similarity, s, sentence))
+                print("redundant pair {}: \n {} \n {}\n".format(similarity, orig_s, sentence))
             SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
                                              topic_dict[sentence]['index'])].append(sentence)
-            return True
 
-    return False
+            # pick the longest version
+            curr_tokens = nltk.word_tokenize(sentence)
+            orig_tokens = nltk.word_tokenize(orig_s)
+            if len(curr_tokens) > len(orig_tokens):
+                return True, [s, orig_s]
+            else:
+                return True, []
+
+    return False, []
 
 
 def score_coherence(summary, full_summary, embeddings):
