@@ -109,8 +109,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             sentence = sentence[start_index:]
 
             tokens = apply_heuristics_to_tokens(nltk.word_tokenize(sentence))
-
-
+            print("tok length is {}".format(len(tokens)))
             if summ_length + len(tokens) <= 100:
                 summ_length += len(tokens)
 
@@ -119,6 +118,8 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             else:
                 continue # keep going in case we find a shorter sentence to add
         # do information ordering for summary
+        print("summary is {}".format(summary))
+        print("fully summary is {}".format(full_summary))
         best_summary = score_coherence(summary, full_summary, embeddings=embeddings)
         summary_dict[topic_id] = best_summary
     out_dir = data_store["{}_outdir".format(args.split)]
