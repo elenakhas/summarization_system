@@ -7,6 +7,8 @@ from itertools import permutations
 import re
 from scipy.spatial.distance import cosine
 import json
+from tqdm import tqdm
+
 
 
 CAPS_PATTERN = re.compile("([A-Z]{2,}(?:\s[A-Z-'0-9]{2,})*)")  # matches one or more consecutive capitalized words
@@ -14,19 +16,19 @@ ATTR_PATTERN = re.compile('[,]([^,\'\"]*?)[.]$')
 PARENS_PATTERN = re.compile("[\(\[].*?[\)\]]")
 QUOTESPACE_PATTERN = re.compile('["] ([A-Za-z0-9])')
 SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
-PRINT_REDUNDANT = True
+PRINT_REDUNDANT = False
 
 
 def strip_attribution(line, n=5):
     match = ATTR_PATTERN.search(line)
     attribution_words = ("said", "say", "report", "state", "according")
-    if match is not None and any(w in match.group(1) for w in attribution_words):
+    if match is not None and "and" not in match.group(1) and any(w in match.group(1) for w in attribution_words):
         if len(nltk.word_tokenize(match.group(1))) <= n:
             line = ATTR_PATTERN.sub(".", line)
     return line
 
 
-def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95, min_length=8, max_length=50, use_embeddings=False):
+def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95, min_length=8, max_length=50, num_sentences=20, use_embeddings=False):
     """
     given a topic dictionary, generates summaries for each topic
     version with info ordering
@@ -39,13 +41,17 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
     """
 
     summary_dict = dict()
-    for topic_id in topic_dict.keys():
+    topic_ids = topic_dict.keys()
+    if args.test:
+        topic_ids = ["D1003A"]
+
+    for topic_id in topic_ids:
         summary = []
         full_summary = []  # without truncated sentences
         summ_length = 0
         sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
 
-        for orig_sentence in sorted_keys:
+        for orig_sentence in sorted_keys[:num_sentences]:
             sentence = orig_sentence
 
             # ignore sentences containing capitalized words 
@@ -58,7 +64,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
 
             if '"' in sentence or "''" in sentence:
                 continue
-
+            
             # store original sentence version
             sentence_id = "{doc_index}_{index}".format(
                 doc_index=topic_dict[topic_id][sentence]['doc_index'],
@@ -89,7 +95,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             # Make sure that the sentence starts with an alphanumeric character
             start_index = 0
             for c in sentence:
-                if c.isalnum():
+                if c.isalnum() or c == '"':
                     break
                 else:
                     start_index += 1
@@ -189,7 +195,7 @@ def apply_heuristics_to_sentence(sentence):
     sentence = re.sub(", aged \d+,", "", sentence)
 
     # remove gerunds
-    sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
+    # sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
     # (, [a-z]+[ing][\sa-zA-Z\d]+,| ^[A-Za-z]+[ing][\sa-zA-Z\d]+,)
 
     return sentence.strip()
@@ -211,9 +217,12 @@ def apply_heuristics_to_tokens(tokens):
             remove_indices.append(i)
         
         if tokens[i].lower() in days_of_week:
-            remove_indices.append(i)
-            if i != 0 and pos_tags[i-1] == "IN":
-                remove_indices.append(i-1)
+            if i < last_index and tokens[i+1].lower() in ("morning", "night"):
+                tokens[i] = "one"
+            else:
+                remove_indices.append(i)
+                if i != 0 and pos_tags[i-1] == "IN":
+                    remove_indices.append(i-1)
 
     
     # don't get rid of adverb at end of sentence
@@ -222,11 +231,7 @@ def apply_heuristics_to_tokens(tokens):
 
     for i in sorted(remove_indices, reverse=True):
         tokens.pop(i)
-
-    # make sure the first token is alphanumeric
-    if not tokens[0].isalnum() and tokens[0] != '"':
-        tokens = tokens[1:]
-
+    
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
     print(tokens[-1])

@@ -1,7 +1,7 @@
 # summarization_system
 A group project for NLP Systems and Applications @ UW
 
-# D3
+# D4
 
 To run the summarization system on **condor**:
 ```
