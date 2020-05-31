@@ -79,11 +79,8 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                 if redundant:
                     # TODO: choose the longest sentence version
                     if to_replace:
-                        print('chose longer version')
                         summary.remove(to_replace[0])
                         full_summary.remove(to_replace[1])
-
-                        print(len(summary), len(full_summary))
                     else:
                         continue
 
@@ -109,17 +106,18 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             sentence = sentence[start_index:]
 
             tokens = apply_heuristics_to_tokens(nltk.word_tokenize(sentence))
-            print("tok length is {}".format(len(tokens)))
+            print("tok length is {}, summ_length: {}, total: {}".format(len(tokens), summ_length, summ_length + len(tokens)))
             if summ_length + len(tokens) <= 100:
                 summ_length += len(tokens)
 
                 summary.append(TreebankWordDetokenizer().detokenize(tokens))
                 full_summary.append(orig_sentence)
+                print("summary is {}".format(summary))
+                print("full summary is {}".format(full_summary))
             else:
                 continue # keep going in case we find a shorter sentence to add
         # do information ordering for summary
-        print("summary is {}".format(summary))
-        print("fully summary is {}".format(full_summary))
+        print("calculating best summary for: summary {} and full summary {}".format(summary, full_summary))
         best_summary = score_coherence(summary, full_summary, embeddings=embeddings)
         summary_dict[topic_id] = best_summary
     out_dir = data_store["{}_outdir".format(args.split)]
@@ -157,7 +155,7 @@ def check_sim_threshold(summary, full_summary, sentence, curr_orig_s, topic_dict
             # pick the longest version
             curr_tokens = nltk.word_tokenize(sentence)
             orig_tokens = nltk.word_tokenize(orig_s)
-            if len(curr_tokens) > len(orig_tokens) and len(curr_tokens) < 100:
+            if len(orig_tokens) < len(curr_tokens) < 100:
                 return True, [s, orig_s]
             else:
                 return True, []
