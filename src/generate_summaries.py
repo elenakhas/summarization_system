@@ -74,7 +74,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
 
             # check if sentence is redundant with existing sentences
             if summary:
-                redundant, to_replace = check_sim_threshold(summary, full_summary, sentence, orig_sentence,topic_dict[topic_id],
+                redundant, to_replace = check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict[topic_id],
                     embeddings, sim_threshold=sim_threshold, use_embeddings=use_embeddings)
                 if redundant:
                     # TODO: choose the longest sentence version
@@ -82,6 +82,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                         print("removing, to replace: {}".format(to_replace))
                         summary.remove(to_replace[0])
                         full_summary.remove(to_replace[1])
+                        summ_length - len(nltk.word_tokenize(to_replace[0]))
                     else:
                         continue
 
@@ -128,7 +129,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         write_to_file(out_dir, args.run_id, topic_id, sentences)
 
 
-def check_sim_threshold(summary, full_summary, sentence, curr_orig_s, topic_dict, embeddings, sim_threshold=0.95, use_embeddings=False):
+def check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict, embeddings, sim_threshold=0.95, use_embeddings=False):
     """
     Checks if a sentence is redundant with sentences already in summary.
     if yes, adds it to SENTENCE_VERSIONS
@@ -156,7 +157,8 @@ def check_sim_threshold(summary, full_summary, sentence, curr_orig_s, topic_dict
             # pick the longest version
             curr_tokens = nltk.word_tokenize(sentence)
             orig_tokens = nltk.word_tokenize(orig_s)
-            if len(orig_tokens) < len(curr_tokens) < 100:
+            new_length = summ_length - orig_tokens + curr_tokens
+            if len(orig_tokens) < len(curr_tokens) and new_length <= 100:
                 return True, [s, orig_s]
             else:
                 return True, []
