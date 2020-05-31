@@ -224,7 +224,7 @@ def apply_heuristics_to_tokens(tokens):
     last_index = len(pos_tags)-1
     for i, pos in enumerate(pos_tags):
         tok = tokens[i].lower()
-        if pos == "RB" and  tok not in ("when", "not", "n't", "about", "again"):
+        if pos == "RB" and  tok not in ("when", "not", "n't", "about", "again", "so"):
             if i < last_index and pos_tags[i+1] == "IN":
                 continue
             remove_indices.append(i)
