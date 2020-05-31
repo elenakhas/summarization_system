@@ -15,13 +15,13 @@ ATTR_PATTERN = re.compile('[,]([^,\'\"]*?)[.]$')
 PARENS_PATTERN = re.compile("[\(\[].*?[\)\]]")
 QUOTESPACE_PATTERN = re.compile('["] ([A-Za-z0-9])')
 SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
-PRINT_REDUNDANT = True
+PRINT_REDUNDANT = False
 
 
 def strip_attribution(line, n=5):
     match = ATTR_PATTERN.search(line)
     attribution_words = ("said", "say", "report", "state", "according")
-    if match is not None and any(w in match.group(1) for w in attribution_words):
+    if match is not None and "and" not in match.group(1) and any(w in match.group(1) for w in attribution_words):
         if len(nltk.word_tokenize(match.group(1))) <= n:
             line = ATTR_PATTERN.sub(".", line)
     return line
@@ -40,7 +40,11 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
     """
 
     summary_dict = dict()
-    for topic_id in topic_dict.keys():
+    topic_ids = topic_dict.keys()
+    if args.test:
+        topic_ids = ["D1003A"]
+
+    for topic_id in topic_ids:
         summary = []
         full_summary = []  # without truncated sentences
         summ_length = 0
@@ -60,6 +64,9 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             if '"' in sentence or "''" in sentence:
                 continue
 
+            
+            print("original:    {}".format(sentence))
+            
             # store original sentence version
             sentence_id = "{doc_index}_{index}".format(
                 doc_index=topic_dict[topic_id][sentence]['doc_index'],
@@ -151,7 +158,7 @@ def score_coherence(summary, full_summary, embeddings):
     candidate_dict = dict()
     # go through all the permutations of sentence orderings
     ord_count = 1
-    for p in tqdm(perms, desc="ordering"):
+    for p in perms:
 
         for i in range(1, len(p)):
             cos_score = 1 - cosine(embeddings[full_summary[i-1]], embeddings[full_summary[i]])
@@ -189,7 +196,7 @@ def apply_heuristics_to_sentence(sentence):
     sentence = re.sub(", aged \d+,", "", sentence)
 
     # remove gerunds
-    sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
+    # sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
     # (, [a-z]+[ing][\sa-zA-Z\d]+,| ^[A-Za-z]+[ing][\sa-zA-Z\d]+,)
 
     return sentence.strip()
