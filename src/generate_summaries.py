@@ -19,7 +19,7 @@ SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
 PRINT_REDUNDANT = False
 
 
-def strip_attribution(line, n=5):
+def strip_attribution(line, n=7):
     match = ATTR_PATTERN.search(line)
     attribution_words = ("said", "say", "report", "state", "according")
     if match is not None and "and" not in match.group(1) and any(w in match.group(1) for w in attribution_words):
@@ -247,7 +247,6 @@ def apply_heuristics_to_tokens(tokens):
     
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
-    print(tokens[-1])
     if tokens[-1] not in {'?', '.', '!'}:
         tokens.append('.')
 
