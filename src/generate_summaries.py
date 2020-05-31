@@ -157,7 +157,7 @@ def check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict
             # pick the longest version
             curr_tokens = nltk.word_tokenize(sentence)
             orig_tokens = nltk.word_tokenize(orig_s)
-            new_length = summ_length - orig_tokens + curr_tokens
+            new_length = summ_length - len(orig_tokens) + len(curr_tokens)
             if len(orig_tokens) < len(curr_tokens) and new_length <= 100:
                 return True, [s, orig_s]
             else:
