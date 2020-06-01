@@ -16,9 +16,9 @@ python3 run_pipeline.py --deliverable "D4" --split "devtest" --run_id "D4test"  
 --use_embeddings --sim_threshold 0.94 --num_sentences 20
 
 # Run the pipeline on evaltest data
-#python3 run_pipeline.py --deliverable "D4" --split "evaltest" --run_id "D4eval"  \
-#--model_name "bert-base-cased-finetuned-mrpc" \
-#--use_embeddings --sim_threshold 0.94 --num_sentences 20
+python3 run_pipeline.py --deliverable "D4" --split "evaltest" --run_id "D4eval"  \
+--model_name "bert-base-cased-finetuned-mrpc" \
+--use_embeddings --sim_threshold 0.94 --num_sentences 20
 
 # Evaluate devtest summaries
 perl /dropbox/19-20/573/code/ROUGE/ROUGE-1.5.5.pl -e /dropbox/19-20/573/code/ROUGE/data \
@@ -26,6 +26,6 @@ perl /dropbox/19-20/573/code/ROUGE/ROUGE-1.5.5.pl -e /dropbox/19-20/573/code/ROU
 $PWD/rouge_run_D4_devtest.xml > $PWD/../results/D4_devtest_rouge_scores.out
 
 # Evaluate evaltest summaries
-#perl /dropbox/19-20/573/code/ROUGE/ROUGE-1.5.5.pl -e /dropbox/19-20/573/code/ROUGE/data \
-#-a -n 2 -x -m -c 95 -r 1000 -f A -p 0.5 -t 0 -l 100 -s -d \
-#$PWD/rouge_run_D4_evaltest.xml > $PWD/../results/D4_evaltest_rouge_scores.out
+perl /dropbox/19-20/573/code/ROUGE/ROUGE-1.5.5.pl -e /dropbox/19-20/573/code/ROUGE/data \
+-a -n 2 -x -m -c 95 -r 1000 -f A -p 0.5 -t 0 -l 100 -s -d \
+$PWD/rouge_run_D4_evaltest.xml > $PWD/../results/D4_evaltest_rouge_scores.out
