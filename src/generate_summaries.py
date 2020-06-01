@@ -83,16 +83,17 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
 
             # check if sentence is redundant with existing sentences
             if summary:
-                redundant, to_replace = check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict[topic_id],
+                redundant = check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict[topic_id],
                     embeddings, sim_threshold=sim_threshold, use_embeddings=use_embeddings)
                 if redundant:
-                    # TODO: choose the longest sentence version
-                    if to_replace:
-                        summary.remove(to_replace[0])
-                        full_summary.remove(to_replace[1])
-                        summ_length = summ_length - len(nltk.word_tokenize(to_replace[0]))
-                    else:
-                        continue
+                    continue
+                    # choose the longest sentence version
+                    #if to_replace:
+                    #    summary.remove(to_replace[0])
+                    #    full_summary.remove(to_replace[1])
+                     #   summ_length = summ_length - len(nltk.word_tokenize(to_replace[0]))
+                    #else:
+                        #continue
 
             sentence = apply_heuristics_to_sentence(sentence)
             
@@ -149,17 +150,17 @@ def check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict
                 print("redundant pair {}: \n {} \n {}\n".format(similarity, orig_s, sentence))
             SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
                                              topic_dict[sentence]['index'])].append(sentence)
-
+            return True
             # pick the longest version
-            curr_tokens = nltk.word_tokenize(sentence)
-            orig_tokens = nltk.word_tokenize(orig_s)
-            new_length = summ_length - len(orig_tokens) + len(curr_tokens)
-            if len(orig_tokens) < len(curr_tokens) and new_length <= 100:
-                return True, [s, orig_s]
-            else:
-                return True, []
+            #curr_tokens = nltk.word_tokenize(sentence)
+            #orig_tokens = nltk.word_tokenize(orig_s)
+            #new_length = summ_length - len(orig_tokens) + len(curr_tokens)
+            #if len(orig_tokens) < len(curr_tokens) and new_length <= 100:
+            #   return True, [s, orig_s]
+            #else:
+            #    return True, []
 
-    return False, []
+    return False
 
 
 def score_coherence(summary, full_summary, embeddings):
