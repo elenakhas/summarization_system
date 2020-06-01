@@ -4,6 +4,7 @@ import argparse
 from gensim import corpora
 from gensim.utils import simple_preprocess
 from gensim.models import LdaModel
+from collections import OrderedDict
 
 
 # reaad json file
@@ -18,7 +19,6 @@ def parseJson(json_file):
         data = json.load(f)
 
     return data
-
 
 def get_corpus_topics(text, lda_model):
     '''
@@ -38,8 +38,8 @@ def get_corpus_topics(text, lda_model):
     return doc_topic_dist
 
 
-def lda_analysis(input_data, num_topics=3, num_sentences=20):
-    picked_sentences = {}
+def lda_analysis(input_data, num_topics=3, random_state=1):
+    
     # treat each set of documents as a separate corpus and find topics?
     for key, value in input_data.items():
         _texts = []
@@ -51,15 +51,14 @@ def lda_analysis(input_data, num_topics=3, num_sentences=20):
         corpus = [dictionary.doc2bow(line) for line in texts]
 
         # build lda model:
-        lda_model = LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics)
+        lda_model = LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics, random_state=random_state)
 
         # get document topic distribution:
         doc_topic_dist = get_corpus_topics(_texts, lda_model)
 
-        # print(lda_model.show_topics(num_words=20))
-        topic_terms = lda_model.show_topics(num_words=50)
+        topic_terms = lda_model.show_topics(num_words=100)
         # get top words for each topic:
-        topic_term_dict = {}
+        topic_term_dict = OrderedDict()
         rel_terms = []
         for topic_dist in topic_terms:
             topic_id = topic_dist[0]
@@ -71,8 +70,6 @@ def lda_analysis(input_data, num_topics=3, num_sentences=20):
                 topic_term_dict[topic_id][topic_term] = float(topic_term_prob)
                 # rel_terms.append(topic_term)
 
-        picked_sentences[key] = {}
-        # pick sentences from the corpus that have highest score for the topic terms according to some score
         summary_sentences = {}
         sen_ranker = []
         # calculate rank for each sentence with respect to each topic:
@@ -81,7 +78,7 @@ def lda_analysis(input_data, num_topics=3, num_sentences=20):
             # sen = sen.lower()
             sen_length = len(sen.split(' '))
             sen_id = input_data[key][sen]['doc_id']
-            if sen_length < 10:
+            if sen_length <= 7:
                 continue
             sen_topic = []
             # compute score for each topic:
@@ -118,18 +115,18 @@ def update_scores(dic):
         new_dict[topic_id] = dict()
         tf_idf = []
         concreteness = []
-        lda = []
+        #lda = []
         for key, info in sent.items():
             tf_idf.append(info['tf_idf'])
             concreteness.append(info['concreteness'])
-            try:
-                lda.append(info['LDAscore'])
-            except KeyError:
-                continue
+            #try:
+                #lda.append(info['LDAscore'])
+            #except KeyError:
+                #continue
 
         m_tf_idf = max(tf_idf)
         m_concrete = max(concreteness)
-        m_lda = max(lda)
+        #m_lda = 1
 
         for key, info in sent.items():
 
@@ -137,7 +134,7 @@ def update_scores(dic):
                 info['tf_idf'] = info['tf_idf'] / m_tf_idf
                 info['concreteness'] = info['concreteness'] / m_concrete
                 try:
-                    info['LDAscore'] = info['LDAscore'] / m_lda
+                    #info['LDAscore'] = info['LDAscore'] / m_lda
                     info['total'] = (info['tf_idf'] * info['concreteness'] * info['LDAscore']) / info['length']
                     sent_info = {k: v for k, v in info.items()}
                     new_dict[topic_id][key] = sent_info
@@ -182,12 +179,12 @@ def select_sent(data, num_sentences):
     return picked_sent
 
 
-def sentence_selection_wrapper(input_data, selected_json_path, num_sentences=20, overwrite=False):
+def sentence_selection_wrapper(input_data, selected_json_path, num_sentences=20, overwrite=False, random_state=1):
     if os.path.exists(selected_json_path) and not overwrite:
         with open(selected_json_path) as infile:
             return json.load(infile)
 
-    new_dict = lda_analysis(input_data, num_topics=3)
+    new_dict = lda_analysis(input_data, random_state=random_state, num_topics=3)
     update_and_normalize = update_scores(new_dict)
     picked_sentences = select_sent(update_and_normalize, num_sentences)
     with open(selected_json_path, "w") as outfile:
