@@ -198,6 +198,7 @@ def apply_heuristics_to_sentence(sentence):
 
     # remove ages
     sentence = re.sub(", aged \d+,", "", sentence)
+    sentence = re.sub(", [0-9]{1,2},", "", sentence)
 
     # remove gerunds
     # sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
@@ -282,7 +283,7 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
             # Make sure that the sentence starts with an alphanumeric character
             start_index = 0
             for c in sentence:
-                if c.isalnum() or c == '"':
+                if c.isalnum():
                     break
                 else:
                     start_index += 1
