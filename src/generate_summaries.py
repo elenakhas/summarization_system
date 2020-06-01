@@ -289,8 +289,8 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
             sentence = sentence[start_index:]
 
             # make sure the first letter of the sentence is capitalized
-            tokens[0] = tokens[0].capitalize()
-            
+            sentence[0] = sentence[0].capitalize()
+
             outfile.write(sentence + "\n")
 
 
