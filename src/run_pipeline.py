@@ -31,6 +31,9 @@ def run(args):
     if args.run_id is None:
         args.run_id = args.deliverable + datetime.now().strftime('%Y%m%d%H%M%S')
 
+    if args.random_state is None:
+        args.random_state = 1
+
     with open(args.config) as infile:
         data_store = json.load(infile)
 
@@ -52,11 +55,10 @@ def run(args):
         "selecting content",
         sentence_selection_wrapper,
         preprocessed_data,
-        os.path.join(
-            data_store["working_dir"], 
-            os.path.basename(xml_filename)[:-4] + ".json.selected"),
+        os.path.join(data_store["working_dir"], os.path.basename(xml_filename)[:-4] + ".json.selected"),
         num_sentences=args.num_sentences,
         overwrite=False,
+        random_state = args.random_state
     )
 
     bert_embeddings = run_module(
@@ -96,6 +98,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", default="bert-base-cased")
     parser.add_argument("--sim_threshold", type=float, default=0.95)
     parser.add_argument("--num_sentences", type=int, default=20)
+    parser.add_argument("--random_state", type=int, default=1)
     args = parser.parse_args()
     run(args)
 
