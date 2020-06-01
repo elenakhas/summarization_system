@@ -81,7 +81,8 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             if "/" in sentence:
                 continue
 
-            if '"' in sentence or "''" in sentence:
+            quotes = ('"', "''", "``")
+            if any(q in sentence for q in quotes):
                 continue
             
             # store original sentence version
@@ -99,17 +100,8 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                     continue
 
             sentence = apply_heuristics_to_sentence(sentence)
-            
-            # Make sure that the sentence starts with an alphanumeric character
-            start_index = 0
-            for c in sentence:
-                if c.isalnum() or c == '"':
-                    break
-                else:
-                    start_index += 1
-            sentence = sentence[start_index:]
-
             tokens = apply_heuristics_to_tokens(sentence)
+            
             if summ_length + len(tokens) <= 100:
                 summ_length += len(tokens)
 
@@ -117,6 +109,9 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                 full_summary.append(orig_sentence)
             else:
                 continue # keep going in case we find a shorter sentence to add
+
+
+
         # do information ordering for summary
         best_summary = score_coherence(summary, full_summary, embeddings=embeddings)
         summary_dict[topic_id] = best_summary
@@ -208,14 +203,6 @@ def apply_heuristics_to_sentence(sentence):
     # sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
     # (, [a-z]+[ing][\sa-zA-Z\d]+,| ^[A-Za-z]+[ing][\sa-zA-Z\d]+,)
 
-    # fix punctuation errors
-    sentence = sentence.replace("_", " ").replace("\\", "")
-    sentence = sentence.replace(" ,", ", ").replace(" .", ". ")
-    sentence = QUOTESPACE_PATTERN.sub('"\g<1>', sentence)  # Replace `" The` with `"The` 
-    sentence = sentence.replace(', "', '," ')
-    sentence = sentence.replace("``", ' "')
-    sentence = sentence.replace("  ", " ")
-
     # strip attribution 
     sentence = strip_attribution(sentence)
     return sentence.strip()
@@ -240,6 +227,9 @@ def apply_heuristics_to_tokens(sentence):
         if tokens[i].lower() in days_of_week:
             if i < last_index and tokens[i+1].lower() in ("morning", "night"):
                 tokens[i] = "one"
+            elif i < last_index and tokens[i+1].lower() == "'s":
+                remove_indices.append(i)
+                tokens[i+1] = "the"
             else:
                 remove_indices.append(i)
                 if i != 0 and pos_tags[i-1] == "IN":
@@ -267,6 +257,7 @@ def apply_heuristics_to_tokens(sentence):
     # end with a period
     if tokens[-1] not in {'?', '.', '!'}:
         tokens.append('.')
+    
     return tokens
 
 
@@ -282,8 +273,24 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     with open(output_path, "w") as outfile:
-        for line in sentences:
-            outfile.write(line + "\n")
+        for sentence in sentences:
+            # === Final post-processing === 
+            # fix punctuation errors
+            sentence = sentence.replace("_", " ").replace("\\", "")
+            sentence = sentence.replace(" ,", ", ").replace(" .", ". ")
+            sentence = QUOTESPACE_PATTERN.sub('"\g<1>', sentence)  # Replace `" The` with `"The` 
+            sentence = sentence.replace(', "', '," ')
+            sentence = sentence.replace("  ", " ")
+
+            # Make sure that the sentence starts with an alphanumeric character
+            start_index = 0
+            for c in sentence:
+                if c.isalnum() or c == '"':
+                    break
+                else:
+                    start_index += 1
+            sentence = sentence[start_index:]
+            outfile.write(sentence + "\n")
 
 
 if __name__ == "__main__":
