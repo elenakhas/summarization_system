@@ -6,7 +6,7 @@ import time
 
 from data_loader import load_data
 from content_selection.preprocessing import preprocess 
-from content_selection.lda_new import lda_analysis
+from content_selection.LDA import sentence_selection_wrapper
 from generate_eval_config import write_eval_config
 from generate_summaries import make_summaries
 from get_embeddings import make_embeddings
@@ -50,7 +50,7 @@ def run(args):
 
     topic_sentences = run_module(
         "selecting content",
-        lda_analysis,
+        sentence_selection_wrapper,
         preprocessed_data,
         os.path.join(
             data_store["working_dir"], 

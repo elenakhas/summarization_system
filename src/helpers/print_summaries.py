@@ -1,6 +1,8 @@
 import os
+import sys 
 
-dirname = "/home2/schan2/573/summarization_system/outputs/D4_devtest"
+dirname = sys.argv[1]
+# dirname = "/home2/schan2/573/summarization_system/outputs/D4_devtest"
 
 # wc -w is used during grading
 filenames = os.listdir(dirname)
