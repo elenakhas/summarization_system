@@ -5,7 +5,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home2/schan2/anaconda3/lib/
 
 # cd src/
 SPLIT=$1
-SIM_THRESHOLD=0.94
+SIM_THRESHOLD=$2
 
 python3 run_pipeline.py --deliverable "D4" --split $SPLIT --run_id "D4test"  \
 --model_name "bert-base-cased-finetuned-mrpc" \
