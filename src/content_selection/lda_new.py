@@ -104,7 +104,7 @@ def lda_analysis(input_data, selected_json_path, overwrite=False, num_topics = 3
         corpus = [dictionary.doc2bow(line) for line in texts]
 
         # build lda model:
-        lda_model = LdaModel(corpus = corpus, num_topics = num_topics)
+        lda_model = LdaModel(corpus = corpus, id2word = dictionary, num_topics = num_topics)
 
         # get document topic distribution:
         doc_topic_dist = get_corpus_topics(_texts, lda_model)

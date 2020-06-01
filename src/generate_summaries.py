@@ -59,9 +59,9 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         summary = []
         full_summary = []  # without truncated sentences
         summ_length = 0
-        sorted_keys = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['LDAscore']), reverse=True)
-
-        for orig_sentence in sorted_keys[:num_sentences]:
+        sorted_sentences = sorted(topic_dict[topic_id], key=lambda x: (topic_dict[topic_id][x]['total']), reverse=True)
+        
+        for orig_sentence in sorted_sentences[:num_sentences]:
             sentence = orig_sentence
 
             if summ_length >= 100:
@@ -109,7 +109,7 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                     start_index += 1
             sentence = sentence[start_index:]
 
-            tokens = apply_heuristics_to_tokens(nltk.word_tokenize(sentence))
+            tokens = apply_heuristics_to_tokens(sentence)
             if summ_length + len(tokens) <= 100:
                 summ_length += len(tokens)
 
@@ -204,10 +204,25 @@ def apply_heuristics_to_sentence(sentence):
     # remove ages
     sentence = re.sub(", aged \d+,", "", sentence)
 
+    # remove gerunds
+    # sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
+    # (, [a-z]+[ing][\sa-zA-Z\d]+,| ^[A-Za-z]+[ing][\sa-zA-Z\d]+,)
+
+    # fix punctuation errors
+    sentence = sentence.replace("_", " ").replace("\\", "")
+    sentence = sentence.replace(" ,", ", ").replace(" .", ". ")
+    sentence = QUOTESPACE_PATTERN.sub('"\g<1>', sentence)  # Replace `" The` with `"The` 
+    sentence = sentence.replace(', "', '," ')
+    sentence = sentence.replace("``", ' "')
+    sentence = sentence.replace("  ", " ")
+
+    # strip attribution 
+    sentence = strip_attribution(sentence)
     return sentence.strip()
 
 
-def apply_heuristics_to_tokens(tokens):
+def apply_heuristics_to_tokens(sentence):
+    tokens = nltk.word_tokenize(sentence)
     days_of_week = "monday tuesday wednesday thursday friday saturday sunday \
         mon. tue. wed. thur. fri. sat. sun.".split()
     # get rid of adverbs
@@ -252,7 +267,6 @@ def apply_heuristics_to_tokens(tokens):
     # end with a period
     if tokens[-1] not in {'?', '.', '!'}:
         tokens.append('.')
-
     return tokens
 
 
@@ -269,15 +283,6 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
         os.makedirs(out_dir)
     with open(output_path, "w") as outfile:
         for line in sentences:
-            line = line.replace("\\", "").replace(" ,", ", ").replace(" .", ". ").replace("_", " ").replace("  ", " ")
-            line = QUOTESPACE_PATTERN.sub('"\g<1>', line)  # Replace `" The` with `"The` 
-            line = line.replace(', "', '," ')
-            line = line.replace("``", ' "')
-
-            line = strip_attribution(line)
-            
-            if not line[0].isupper():
-                line = line[0].upper() + line[1:]
             outfile.write(line + "\n")
 
 
