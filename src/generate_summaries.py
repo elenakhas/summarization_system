@@ -20,8 +20,7 @@ SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
 PRINT_REDUNDANT = False
 
 
-
-def strip_which(line, n = 7):
+def strip_which(line, n=7):
     match = WHICH_PATTERN.search(line)
     if match is not None and 'which' in match.group(1):
         if len(nltk.word_tokenize(match.group(1))) <= n:
@@ -98,13 +97,6 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
                     embeddings, sim_threshold=sim_threshold, use_embeddings=use_embeddings)
                 if redundant:
                     continue
-                    # choose the longest sentence version
-                    #if to_replace:
-                    #    summary.remove(to_replace[0])
-                    #    full_summary.remove(to_replace[1])
-                     #   summ_length = summ_length - len(nltk.word_tokenize(to_replace[0]))
-                    #else:
-                        #continue
 
             sentence = apply_heuristics_to_sentence(sentence)
             
@@ -118,7 +110,6 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             sentence = sentence[start_index:]
 
             tokens = apply_heuristics_to_tokens(nltk.word_tokenize(sentence))
-            #print("tok length is {}, summ_length: {}, total: {}".format(len(tokens), summ_length, summ_length + len(tokens)))
             if summ_length + len(tokens) <= 100:
                 summ_length += len(tokens)
 
@@ -127,7 +118,6 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             else:
                 continue # keep going in case we find a shorter sentence to add
         # do information ordering for summary
-        #print("calculating best summary for: summary {} and full summary {}".format(summary, full_summary))
         best_summary = score_coherence(summary, full_summary, embeddings=embeddings)
         summary_dict[topic_id] = best_summary
     out_dir = data_store["{}_outdir".format(args.split)]
@@ -155,21 +145,14 @@ def check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict
             similarity = 1 - cosine(embeddings[orig_s], embeddings[sentence])
         else:
             raise Exception("spaCy similarity is no longer used: run with --use_embeddings flag")
-            # similarity = calculate_similarity(s, sentence)
+
         if similarity > sim_threshold:
             if PRINT_REDUNDANT:
                 print("redundant pair {}: \n {} \n {}\n".format(similarity, orig_s, sentence))
             SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
                                              topic_dict[sentence]['index'])].append(sentence)
             return True
-            # pick the longest version
-            #curr_tokens = nltk.word_tokenize(sentence)
-            #orig_tokens = nltk.word_tokenize(orig_s)
-            #new_length = summ_length - len(orig_tokens) + len(curr_tokens)
-            #if len(orig_tokens) < len(curr_tokens) and new_length <= 100:
-            #   return True, [s, orig_s]
-            #else:
-            #    return True, []
+
 
     return False
 
@@ -192,6 +175,7 @@ def score_coherence(summary, full_summary, embeddings):
                 candidate_dict[p] = cos_score
 
         ord_count += 1
+
     # divide by n-1
     for option in candidate_dict.keys():
         candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
@@ -201,8 +185,6 @@ def score_coherence(summary, full_summary, embeddings):
 
 
 def apply_heuristics_to_sentence(sentence):
-    #print(sentence)
-    #sentence = sentence.replace('or so', '')
     # remove parenthetical expressions () []
     sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
 
@@ -221,10 +203,6 @@ def apply_heuristics_to_sentence(sentence):
 
     # remove ages
     sentence = re.sub(", aged \d+,", "", sentence)
-
-    # remove gerunds
-    # sentence = re.sub(", [a-z]+[ing][\sa-zA-Z\d]+,", "", sentence)
-    # (, [a-z]+[ing][\sa-zA-Z\d]+,| ^[A-Za-z]+[ing][\sa-zA-Z\d]+,)
 
     return sentence.strip()
 
