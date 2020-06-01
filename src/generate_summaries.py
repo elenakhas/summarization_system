@@ -4,21 +4,32 @@ import os
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 import nltk
 from itertools import permutations
-from compute_similarity import remove_stopwords, add_lemmas
 import re
 from scipy.spatial.distance import cosine
+import json
 from tqdm import tqdm
+
 
 
 CAPS_PATTERN = re.compile("([A-Z]{2,}(?:\s[A-Z-'0-9]{2,})*)")  # matches one or more consecutive capitalized words
 ATTR_PATTERN = re.compile('[,]([^,\'\"]*?)[.]$')
+WHICH_PATTERN = re.compile('([,]([^,\'\"]*?)[.])')
 PARENS_PATTERN = re.compile("[\(\[].*?[\)\]]")
 QUOTESPACE_PATTERN = re.compile('["] ([A-Za-z0-9])')
 SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
 PRINT_REDUNDANT = False
 
 
-def strip_attribution(line, n=5):
+def strip_which(line, n=7):
+    match = WHICH_PATTERN.search(line)
+    if match is not None and 'which' in match.group(1):
+        if len(nltk.word_tokenize(match.group(1))) <= n:
+            line = WHICH_PATTERN.sub(".", line)
+
+    return line
+
+
+def strip_attribution(line, n=9):
     match = ATTR_PATTERN.search(line)
     attribution_words = ("said", "say", "report", "state", "according")
     if match is not None and "and" not in match.group(1) and any(w in match.group(1) for w in attribution_words):
@@ -53,6 +64,15 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         for orig_sentence in sorted_sentences[:num_sentences]:
             sentence = orig_sentence
 
+            if summ_length >= 100:
+                break
+
+            # ignore short sentences
+            sen_length = topic_dict[topic_id][sentence]['length']
+
+            if sen_length <= min_length or sen_length > max_length:
+                continue
+
             # ignore sentences containing capitalized words 
             match = CAPS_PATTERN.search(sentence)
             if match is not None:
@@ -73,20 +93,10 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
 
             # check if sentence is redundant with existing sentences
             if summary:
-                redundant = check_sim_threshold(summary, full_summary, sentence, topic_dict[topic_id], 
+                redundant = check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict[topic_id],
                     embeddings, sim_threshold=sim_threshold, use_embeddings=use_embeddings)
                 if redundant:
-                    # TODO: choose the longest sentence version
                     continue
-
-
-            if summ_length >= 100:
-                break
-
-            # ignore short sentences
-            sen_length = topic_dict[topic_id][sentence]['length']
-            if sen_length <= min_length or sen_length > max_length:
-                continue
 
             sentence = apply_heuristics_to_sentence(sentence)
             
@@ -100,8 +110,6 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             sentence = sentence[start_index:]
 
             tokens = apply_heuristics_to_tokens(sentence)
-
-
             if summ_length + len(tokens) <= 100:
                 summ_length += len(tokens)
 
@@ -119,11 +127,12 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
         write_to_file(out_dir, args.run_id, topic_id, sentences)
 
 
-def check_sim_threshold(summary, full_summary, sentence, topic_dict, embeddings, sim_threshold=0.95, use_embeddings=False):
+def check_sim_threshold(summary, full_summary, sentence, summ_length, topic_dict, embeddings, sim_threshold=0.95, use_embeddings=False):
     """
     Checks if a sentence is redundant with sentences already in summary.
     if yes, adds it to SENTENCE_VERSIONS
     Args:
+        curr_orig_s: the original version of the sentence we're currently evaluating
         summary: the sentences in the summary so far
         sentence: the sentence being evaluated
         topic_dict: dict with sentence info
@@ -136,13 +145,14 @@ def check_sim_threshold(summary, full_summary, sentence, topic_dict, embeddings,
             similarity = 1 - cosine(embeddings[orig_s], embeddings[sentence])
         else:
             raise Exception("spaCy similarity is no longer used: run with --use_embeddings flag")
-            # similarity = calculate_similarity(s, sentence)
+
         if similarity > sim_threshold:
             if PRINT_REDUNDANT:
-                print("redundant pair {}: \n {} \n {}\n".format(similarity, s, sentence))
+                print("redundant pair {}: \n {} \n {}\n".format(similarity, orig_s, sentence))
             SENTENCE_VERSIONS["{}_{}".format(topic_dict[sentence]['doc_index'],
                                              topic_dict[sentence]['index'])].append(sentence)
             return True
+
 
     return False
 
@@ -165,6 +175,7 @@ def score_coherence(summary, full_summary, embeddings):
                 candidate_dict[p] = cos_score
 
         ord_count += 1
+
     # divide by n-1
     for option in candidate_dict.keys():
         candidate_dict[option] = candidate_dict[option] / (ord_count - 1)
@@ -174,8 +185,6 @@ def score_coherence(summary, full_summary, embeddings):
 
 
 def apply_heuristics_to_sentence(sentence):
-    #print(sentence)
-    #sentence = sentence.replace('or so', '')
     # remove parenthetical expressions () []
     sentence = re.sub("[\(\[].*?[\)\]]", " ", sentence)
 
@@ -188,6 +197,9 @@ def apply_heuristics_to_sentence(sentence):
     sentence = sentence.replace('At this point, ', '')
     sentence = sentence.replace(', however,', '')
     sentence = sentence.replace(', also, ', '')
+
+    # remove which clauses at end of sentence
+    sentence = strip_which(sentence)
 
     # remove ages
     sentence = re.sub(", aged \d+,", "", sentence)
@@ -220,7 +232,7 @@ def apply_heuristics_to_tokens(sentence):
     last_index = len(pos_tags)-1
     for i, pos in enumerate(pos_tags):
         tok = tokens[i].lower()
-        if pos == "RB" and  tok not in ("when", "not", "n't", "about", "again"):
+        if pos == "RB" and  tok not in ("when", "not", "n't", "about", "again", "so"):
             if i < last_index and pos_tags[i+1] == "IN":
                 continue
             remove_indices.append(i)
@@ -240,9 +252,21 @@ def apply_heuristics_to_tokens(sentence):
 
     for i in sorted(remove_indices, reverse=True):
         tokens.pop(i)
+
+    # remove 'but' at beginning of sentence
+    if tokens[0] == 'but' or tokens[0] == 'But':
+        tokens.pop(0)
     
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
+
+    # replace final commas with periods
+    if tokens[-1] == ",":
+        tokens[-1] = "."
+
+    # end with a period
+    if tokens[-1] not in {'?', '.', '!'}:
+        tokens.append('.')
     return tokens
 
 
@@ -271,6 +295,6 @@ if __name__ == "__main__":
     with open(args.candidates) as infile:
         topic_dictionary = json.load(infile)
 
-    summaries_dict = make_summaries(topic_dictionary)
+    make_summaries(topic_dictionary)
 
 
