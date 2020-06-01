@@ -256,9 +256,6 @@ def apply_heuristics_to_tokens(sentence):
     if tokens[-1] not in {'?', '.', '!'}:
         tokens.append('.')
     
-    if not tokens[0][0].isupper():
-        tokens[0] = tokens[0][0].upper() + tokens[0][1:]
-    
     return tokens
 
 
@@ -291,6 +288,9 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
                 else:
                     start_index += 1
             sentence = sentence[start_index:]
+
+            if not sentence[0].isupper():
+                sentence = sentence[0].upper() + sentence[1:]
 
             outfile.write(sentence + "\n")
 
