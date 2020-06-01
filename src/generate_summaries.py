@@ -256,8 +256,8 @@ def apply_heuristics_to_tokens(sentence):
     if tokens[-1] not in {'?', '.', '!'}:
         tokens.append('.')
     
-    if not tokens[0].istitle():
-        tokens[0] = tokens[0].title()
+    if not tokens[0][0].isupper():
+        tokens[0] = tokens[0][0].upper() + tokens[0][1:]
     
     return tokens
 
