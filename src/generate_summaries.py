@@ -246,9 +246,6 @@ def apply_heuristics_to_tokens(sentence):
     # remove 'but' at beginning of sentence
     if tokens[0] == 'but' or tokens[0] == 'But':
         tokens.pop(0)
-    
-    # make sure the first letter of the sentence is capitalized
-    tokens[0] = tokens[0].capitalize()
 
     # replace final commas with periods
     if tokens[-1] == ",":
@@ -290,6 +287,10 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
                 else:
                     start_index += 1
             sentence = sentence[start_index:]
+
+            # make sure the first letter of the sentence is capitalized
+            tokens[0] = tokens[0].capitalize()
+            
             outfile.write(sentence + "\n")
 
 
