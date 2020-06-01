@@ -256,6 +256,9 @@ def apply_heuristics_to_tokens(sentence):
     if tokens[-1] not in {'?', '.', '!'}:
         tokens.append('.')
     
+    if not tokens[0].istitle():
+        tokens[0] = tokens[0].title()
+    
     return tokens
 
 
@@ -288,9 +291,6 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
                 else:
                     start_index += 1
             sentence = sentence[start_index:]
-
-            # make sure the first letter of the sentence is capitalized
-            sentence[0] = sentence[0].capitalize()
 
             outfile.write(sentence + "\n")
 
