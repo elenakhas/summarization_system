@@ -252,6 +252,12 @@ def apply_heuristics_to_tokens(tokens):
     
     # make sure the first letter of the sentence is capitalized
     tokens[0] = tokens[0].capitalize()
+
+    # replace final commas with periods
+    if tokens[-1] == ",":
+        tokens[-1] = "."
+
+    # end with a period
     if tokens[-1] not in {'?', '.', '!'}:
         tokens.append('.')
 
