@@ -13,10 +13,21 @@ from tqdm import tqdm
 
 CAPS_PATTERN = re.compile("([A-Z]{2,}(?:\s[A-Z-'0-9]{2,})*)")  # matches one or more consecutive capitalized words
 ATTR_PATTERN = re.compile('[,]([^,\'\"]*?)[.]$')
+WHICH_PATTERN = re.compile('([,]([^,\'\"]*?)[.])')
 PARENS_PATTERN = re.compile("[\(\[].*?[\)\]]")
 QUOTESPACE_PATTERN = re.compile('["] ([A-Za-z0-9])')
 SENTENCE_VERSIONS = dict() # multiple sentence versions, key: doc_index_index
 PRINT_REDUNDANT = False
+
+
+
+def strip_which(line, n = 7):
+    match = WHICH_PATTERN.search(line)
+    if match is not None and 'which' in match.group(1):
+        if len(nltk.word_tokenize(match.group(1))) <= n:
+            line = WHICH_PATTERN.sub(".", line)
+
+    return line
 
 
 def strip_attribution(line, n=9):
@@ -204,6 +215,9 @@ def apply_heuristics_to_sentence(sentence):
     sentence = sentence.replace('At this point, ', '')
     sentence = sentence.replace(', however,', '')
     sentence = sentence.replace(', also, ', '')
+
+    # remove which clauses at end of sentence
+    sentence = strip_which(sentence)
 
     # remove ages
     sentence = re.sub(", aged \d+,", "", sentence)
