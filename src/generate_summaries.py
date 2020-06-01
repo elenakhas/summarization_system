@@ -78,9 +78,11 @@ def make_summaries(topic_dict, embeddings, args, data_store, sim_threshold=0.95,
             if match is not None:
                 continue
              
+            # ignore sentences containing "/"
             if "/" in sentence:
                 continue
 
+            # ignore sentences containing quotes
             quotes = ('"', "''", "``")
             if any(q in sentence for q in quotes):
                 continue
@@ -213,36 +215,41 @@ def apply_heuristics_to_tokens(sentence):
     tokens = nltk.word_tokenize(sentence)
     days_of_week = "monday tuesday wednesday thursday friday saturday sunday \
         mon. tue. wed. thur. fri. sat. sun.".split()
-    # get rid of adverbs
+  
     pos_tags = [el[1] for el in nltk.pos_tag(tokens)]
 
-    remove_indices = list()
+    # ==== Start removal process ==== 
+    remove_indices = list() # indices of tokens to remove
     last_index = len(pos_tags)-1
     for i, pos in enumerate(pos_tags):
         tok = tokens[i].lower()
-        if pos == "RB" and  tok not in ("when", "not", "n't", "about", "again", "so"):
+        # if the token is an adverb and not in the list of exceptions
+        adverb_exceptions = ("when", "not", "n't", "about", "again", "so")
+        if pos == "RB" and tok not in adverb_exceptions:
+            if i == last_index-1:
+                # don't get rid of adverb at end of sentence
+                continue 
             if i < last_index and pos_tags[i+1] == "IN":
+                # don't get rid of adverb before a preposition
                 continue
             remove_indices.append(i)
         
         if tokens[i].lower() in days_of_week:
             if i < last_index and tokens[i+1].lower() in ("morning", "night"):
+                # Monday night -> One night
                 tokens[i] = "one"
             elif i < last_index and tokens[i+1].lower() == "'s":
+                # Monday's incident -> The incident
                 remove_indices.append(i)
                 tokens[i+1] = "the"
             else:
+                # The incident happened (on) Tuesday -> The incident happened
                 remove_indices.append(i)
                 if i != 0 and pos_tags[i-1] == "IN":
                     remove_indices.append(i-1)
-
-    
-    # don't get rid of adverb at end of sentence
-    if len(pos_tags) - 2 in remove_indices and pos_tags[len(pos_tags)-2] == "RB":
-        remove_indices.remove(len(pos_tags) - 2)
-
     for i in sorted(remove_indices, reverse=True):
         tokens.pop(i)
+    # ==== End removal process ==== 
 
     # remove 'but' at beginning of sentence
     if tokens[0] == 'but' or tokens[0] == 'But':
@@ -280,7 +287,7 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
             sentence = sentence.replace(', "', '," ')
             sentence = sentence.replace("  ", " ")
 
-            # Make sure that the sentence starts with an alphanumeric character
+            # make sure the sentence starts with an alphanumeric character
             start_index = 0
             for c in sentence:
                 if c.isalnum():
@@ -289,6 +296,7 @@ def write_to_file(out_dir, run_id, topic_id, sentences):
                     start_index += 1
             sentence = sentence[start_index:]
 
+            # capitalize the first letter of the sentence
             if not sentence[0].isupper():
                 sentence = sentence[0].upper() + sentence[1:]
 
