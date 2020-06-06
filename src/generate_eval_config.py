@@ -24,7 +24,7 @@ def indent(elem, level=0):
             elem.tail = i
 
 
-def build_tree(outfile: str, outputs_dir: List, outputs_path: str, models_dir: List, model_path: str):
+def build_tree(outfile: str, outputs_dir: List, outputs_path: str, models_dir: List, model_path: str, run_id: str):
     """
     builds an xml tree and writes it to given output file
     Args:
@@ -42,7 +42,7 @@ def build_tree(outfile: str, outputs_dir: List, outputs_path: str, models_dir: L
     # model file D0901-A.M.100.A.A
     # make eval subtrees
     for f in outputs_dir:
-        EVAL_ID = f[:-7]
+        EVAL_ID = f[:-len(run_id)]
         #print(EVAL_ID)
         EVAL = ET.SubElement(top, 'EVAL', ID=EVAL_ID)
         PEER_ROOT = ET.SubElement(EVAL, 'PEER-ROOT')
@@ -66,16 +66,19 @@ def build_tree(outfile: str, outputs_dir: List, outputs_path: str, models_dir: L
     tree.write(outfile, encoding="utf-8", short_empty_elements=False)
 
 
-def write_eval_config(args, data_store, overwrite=True):
+def write_eval_config(args, data_store, overwrite=True, eval_filename=None):
     # print("args.split: {}".format(args.split))
-
-    outf = "rouge_run_{}_{}.xml".format(args.deliverable, args.split)
+    
+    if eval_filename is None:
+        outf = "rouge_run_{}_{}.xml".format(args.deliverable, args.split)
+    else:
+        outf = eval_filename
 
     if args.split == 'training':
         outputs_path = data_store["training_outdir"]
         if outputs_path.endswith("/"):
             outputs_path = outputs_path[:-1]
-        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
+        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f)) and f.endswith(args.run_id)]
         #model_path = "/Users/esgardner/PycharmProjects/" + args.year # for running locally
         model_path = os.path.join(data_store["human_summaries"], args.split, "2009")
         model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
@@ -83,11 +86,11 @@ def write_eval_config(args, data_store, overwrite=True):
         outputs_path = os.path.join(data_store["{}_outdir".format(args.split)])
         if outputs_path.endswith("/"):
             outputs_path = outputs_path[:-1]
-        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f))]
+        output_files = [f for f in os.listdir(outputs_path) if isfile(join(outputs_path, f)) and f.endswith(args.run_id)]
         model_path = os.path.join(data_store["human_summaries"], args.split)
         model_files = [f for f in os.listdir(model_path) if isfile(join(model_path, f)) and '-A' in f]
 
-    build_tree(outf, sorted(output_files), outputs_path, sorted(model_files), model_path)
+    build_tree(outf, sorted(output_files), outputs_path, sorted(model_files), model_path, run_id=args.run_id)
 
 
 if __name__ == "__main__":
