@@ -6,6 +6,7 @@ A group project for NLP Systems and Applications @ UW
 To run the summarization system on **condor**:
 ```
 git clone git@github.com:elenakhas/summarization_system.git
+cd summarization_system
 condor_submit D4.cmd
 ```
 
